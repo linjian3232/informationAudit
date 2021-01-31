@@ -11,6 +11,6 @@
 
     <select id="verifyPassword" resultType="java.lang.Integer">
 -- #后边跟着的数字是传入参数的序号
-        select count(*) from admin where name=#(0) and password=#{1}
+        select count(*) from admin where name=#{username} and password=#{password}
     </select>
 </mapper>

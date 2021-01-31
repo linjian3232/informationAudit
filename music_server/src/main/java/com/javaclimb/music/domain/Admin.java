@@ -3,11 +3,13 @@ package com.javaclimb.music.domain;
 import java.io.Serializable;
 
 //Serializable实现前后端的传输
-public class admin implements Serializable {
+public class Admin implements Serializable {
 //    主键
     private Integer id;
 //    账号
     private String name;
+//    密码
+    private String password;
 
     public Integer getId() {
         return id;
@@ -33,6 +35,5 @@ public class admin implements Serializable {
         this.password = password;
     }
 
-    //    密码
-    private  String password;
+
 }

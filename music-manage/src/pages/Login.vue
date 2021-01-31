@@ -18,13 +18,15 @@
 </template>
 
 <script>
+import {mixin} from "../mixins/index";
+import {getLoginStatus} from "../api/index";
 export default {
-  data:function(){
+  mixins:[mixin],
+  data: function(){
     return {
       ruleForm:{
         username: "admin",
-        password: "123",
-        
+        password: "123"
       },
       rules:{
         username:[
@@ -33,14 +35,24 @@ export default {
         password:[
           {required:true,message:"请输入密码",trigger:"blur"}
         ]
-        
       }
     };
   },
   methods:{
     submitForm(){
-      alert("提交");
-    }
+      let params = new URLSearchParams();
+      params.append("name",this.ruleForm.username);
+      params.append("password",this.ruleForm.password);
+      getLoginStatus(params)
+      .then((res) =>{
+        if(res.code == 1){
+        this.$router.push("/Info");
+          this.notify("登录成功","success");
+        }else{
+          this.notify("登录失败","error");
+        }
+      });
+  }
   }
 }
 </script>
@@ -64,25 +76,26 @@ export default {
   font-weight: 600;
   color: #fff;
 }
-.ms-login{
-  position:absolute;
-  left:50%;
-  top:50%;
+
+.ms-login {
+  position: absolute;
+  left: 50%;
+  top: 50%;
   width: 300px;
   height: 160px;
   /* 左移150 */
-  margin-left:-190px;
+  margin-left: -190px;
   margin-top: -150px;
-  padding:40px;
-  border-radius:5px;
-  background:#fff;
+  padding: 40px;
+  border-radius: 5px;
+  background: #fff;
 }
-.login-btn{
+.login-btn {
   /* 居中 */
   text-align: center;
 }
-.login-btn button{
-  width:100%;
-  height:36px;
+.login-btn button {
+  width: 100%;
+  height: 36px;
 }
 </style>
