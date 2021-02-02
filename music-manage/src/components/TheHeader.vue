@@ -11,6 +11,20 @@
                 <i class="el-icon-rank"></i>
                 </el-tooltip>
             </div>
+            <div class="user-avator">
+                <img src="../assets/img/user.jpg"/>
+            </div>
+            <!-- el-dropdown :下拉菜单 -->
+            <el-dropdown class="user-name" trigger ="click" @command="handleCommand">
+                <span class="el-dropdown-link">
+                    {{userName}}
+                    <i class="el-icon-caret-bottom"></i>
+                </span>
+               
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
         </div>
     </div>
 </template>
@@ -23,6 +37,12 @@ export default {
         return{
             collapse: false,
             fullscreen:false
+        }
+    },
+    //监视状态
+    computed:{
+        userName(){
+            return localStorage.getItem('userName');
         }
     },
     methods:{
@@ -66,6 +86,13 @@ export default {
                 }
             }
             this.fullscreen=!this.fullscreen;
+        },
+        handleCommand(command){
+            if(command=="logout"){
+                // 退出登录清除缓存
+                localStorage.removeItem('userName');
+                this.$router.push("/");
+            }
         }
     }
 }
@@ -111,5 +138,25 @@ export default {
     transform: rotate(45deg);
     margin-right: 50px;
     font-size: 24px;
+}
+.user-avator{
+    margin-left:20px;
+
+}
+.user-avator img{
+    display: block;
+    width:40px;
+    height:40px;
+    /* 圆弧  50%正圆形*/
+    border-radius:50%;
+}
+
+.user-name{
+    margin-left:10px;
+}
+
+.el-dropdown-link{
+    color:#ffffff;
+    cursor: pointer;
 }
 </style>
