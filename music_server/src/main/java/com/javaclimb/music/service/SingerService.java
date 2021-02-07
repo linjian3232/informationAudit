@@ -1,29 +1,29 @@
-package com.javaclimb.music.dao;
+package com.javaclimb.music.service;
 
 import com.javaclimb.music.domain.Singer;
-import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 
 /**
- * 歌手Dao
+ * 管理员service接口
  */
-@Repository
-public interface SingerMapper {
-/**
- * 增加
- */
-    public int insert(Singer singer);
+
+public interface SingerService {
+    /**
+     * 增加
+     */
+    public boolean insert(Singer singer);
 
     /**
      * 修改
      */
-    public int update(Singer singer);
+    public boolean update(Singer singer);
 
     /**
      * 删除
      */
-    public int delete(Integer id);
+    public boolean delete(Integer id);
 
     /**
      * 根据逐渐查询整个对象
@@ -41,5 +41,11 @@ public interface SingerMapper {
      */
     public List<Singer> singerOfName(String name);
 
+    /**
+     * 根据性别查询
+     * @param gender
+     * @return
+     */
     public List<Singer> singerOfGender (Integer gender);
+
 }

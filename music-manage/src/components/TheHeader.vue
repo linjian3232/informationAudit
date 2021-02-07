@@ -56,7 +56,7 @@ export default {
             if(this.fullscreen){
                 if(document.exitFullscreen){
                     document.exitFullscreen();
-                }else if(document.webkitCancelFullScreen){ //safari\ chrome
+                }else if(document.webkitCancelFullScreen){ //safari、 chrome
                     document.webkitCancelFullScreen();
                 }
                 else if(document.mozCancelFullScreen){//firefox
@@ -71,18 +71,12 @@ export default {
                 if(element.requestFullscreen)
                 {
                     element.requestFullscreen();
-                }
-                else if(element.webkitCancelFullScreen)
-                {
-                    element.webkitCancelFullScreen();
-                }
-                else if(element.mozCancelFullScreen)
-                {
-                    element.mozCancelFullScreen();
-                }
-                else if(element.msExitFullScreen)
-                {
-                    element.msExitFullScreen();
+                }else if(element.webkitRequestFullScreen){      //safari 、Chrome
+                    element.webkitRequestFullScreen();
+                }else if(element.mozRequestFullScreen){         //firefox
+                    element.mozRequestFullScreen();
+                }else if (element.msRequestFullScreen){         //ie
+                    element.msRequestFullScreen();
                 }
             }
             this.fullscreen=!this.fullscreen;
@@ -101,7 +95,7 @@ export default {
 .header{
     position: relative;
     background-color: #253041;
-    box-sizing: boder-box;
+    box-sizing: border-box;
     width:100%;
     height: 70px;
     font-size: 22px;
@@ -136,7 +130,7 @@ export default {
 
 .btn-fullscreen{
     transform: rotate(45deg);
-    margin-right: 50px;
+    margin-right: 5px;
     font-size: 24px;
 }
 .user-avator{

@@ -74,7 +74,7 @@ export default {
     position: absolute;
     left: 0;
     top: 70px;
-    bottom: 0px;
+    bottom: 0;
     background-color: #334256;
     /* 设置如果超出范围可以下滑 */
     overflow-y: scroll;

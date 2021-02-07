@@ -23,7 +23,7 @@ export default {
     },
     created(){
         bus.$on('collapse',msg=>{
-            this.collapse=msg;
+            this.collapse=msg
         })
     }
 }

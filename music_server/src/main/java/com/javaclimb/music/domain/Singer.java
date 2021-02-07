@@ -78,6 +78,4 @@ public class Singer implements Serializable {
         this.introduction = introduction;
     }
 
-
-
 }
