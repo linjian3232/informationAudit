@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -149,4 +153,50 @@ public class SingerController {
         return singerService.selectByPrimaryKey(Integer.parseInt(gender));
 
     }
+//    更新歌手图片
+    @RequestMapping(value= "/updateSingerPic",method = RequestMethod.POST)
+    public Object updateSingerPic(@RequestParam("file")MultipartFile avatorFile,@RequestParam("id")int id){
+        JSONObject jsonObject= new JSONObject();
+        if(avatorFile.isEmpty()){
+            jsonObject.put(Consts.CODE,0);
+            jsonObject.put(Consts.MSG,"文件上传失败");
+            return jsonObject;
+        }
+//        currentTimeMillis是一个当前时间精确到毫秒的长字符串，这样做的目的是避免同时上传两个文件的时候其中一个被覆盖掉
+
+        String fileName = System.currentTimeMillis()+avatorFile.getOriginalFilename();
+        String filePath =System.getProperty("user.dir")+System.getProperty("file.separator")+"img"+System.getProperty("file.separator")+"singerPic";
+        File file1 = new File(filePath);
+//        如果文件路劲不存在，创建新的路劲
+        if(!file1.exists()){
+            file1.mkdir();
+        }
+//        实际的文件地址
+        File dest = new File(filePath+System.getProperty("file.separator")+fileName);
+        String storeAvatorPath= "/img/singerPic/"+fileName;
+        try {
+            avatorFile.transferTo(dest);
+            Singer singer = new Singer();
+            singer.setId(id);
+            singer.setPic(storeAvatorPath);
+            boolean flag= singerService.update(singer);
+            if(flag){
+                jsonObject.put(Consts.CODE,1);
+                jsonObject.put(Consts.MSG,"上传成功");
+                jsonObject.put("pic",storeAvatorPath);
+                return jsonObject;
+            }
+            jsonObject.put(Consts.CODE,0);
+            jsonObject.put(Consts.MSG,"文件上传失败");
+            return jsonObject;
+
+        }catch (IOException e){
+            jsonObject.put(Consts.CODE,0);
+            jsonObject.put(Consts.MSG,"文件上传失败"+e.getMessage());
+        }finally {
+            return jsonObject;
+        }
+    }
+
+
 }

@@ -27,6 +27,40 @@ export const mixin = {
             return '不明';
         }
         return value;
+    },
+    // 获取生日
+    attachBirth(val){
+        return String(val).substr(0,10); 
+    },
+    beforeAvatorUpload(file){
+        const isJPG = (file.type=== 'image/jpeg')||(file.type==='image/png');
+        if(!isJPG){
+            this.$message.error('上传头像图片只能是jpg或png格式');
+            return false;
+        }
+        const isLt2M = (file.size /1024 /1024) <2;
+        if(!isLt2M){
+            this.$message.error('上传头像图片的大小不饿能超过2M');
+            return false;
+        }
+        return true;
+    },
+
+    // 上传图片成功后要做的工作
+    handleAvatorSuccess(res){
+        let _this=this;
+        if(res.code==1){
+            _this.getData();
+            _this.$notify({
+                title: '上传成功',
+                type: 'success'
+            });
+        }else{
+            _this.$notify({
+                title: '上传失败',
+                type: 'error'
+            });
+        }
     }
     }
 }

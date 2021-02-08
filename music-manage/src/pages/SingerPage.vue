@@ -2,17 +2,21 @@
     <div class="table">
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" size="mini" @click="centerDialogVisible = true"> 
-                    添加歌手
-                </el-button>
+                <el-input v-model="select_word" placeholder="请输入歌手名" class="handle-input" size="mini"></el-input>
+                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌手</el-button>
+                
             </div>
         </div>
         <el-table size="mini" border style="width:100%" height="500px" :data="tableData">
             <el-table-column label="歌手图片" width="110" align="center">
                 <template slot-scope="scope">
                     <div class="singer-img">
-                        <img :src="getUrl(scope.row.pic)" style="width:100%"/>
+                        <img :src="getUrl(scope.row.pic)" style="width:100%"/>  
                     </div>
+                    <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatorUpload" 
+		    :on-success="handleAvatorSuccess">
+                        <el-button size="mini">更新头像</el-button>
+                    </el-upload>
                 </template>
             </el-table-column>
             <el-table-column prop="name" label="歌手" width="120" align="center"></el-table-column>
@@ -21,11 +25,26 @@
                     {{ changeGender(scope.row.gender) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="birth" label="生日" width="120" align="center"></el-table-column>
+            <el-table-column label="生日" width="120" align="center">
+                 <template slot-scope="scope">
+                    {{ attachBirth(scope.row.birth) }}
+                </template>
+            </el-table-column>
             <el-table-column prop="location" label="所在地区" width="100" align="center"></el-table-column>
-            <el-table-column prop="introduction" label="简介" width="120" align="center"></el-table-column>
-
+            <el-table-column label="简介">
+                <template slot-scope="scope">
+                <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
+                </template>
+            </el-table-column>
         </el-table>
+        <div class="pagination">
+            <el-pagination
+	     background
+	      layout="total,prev,pager,next"
+	       :current-page="currentPage"
+	        :page-size="pageSize"
+		 :total="tableData.length"></el-pagination>
+        </div>
 
         <!-- 弹出窗口 visible表示是否可见 -->     
         <el-dialog title="添加歌手" :visible.sync="centerDialogVisible" width="400px" center>           
@@ -44,7 +63,7 @@
                 <el-form-item prop="birth" label="生日" size="mini">
                     <el-date-picker type="date" v-model="registerForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
                 </el-form-item>
-                 <el-form-item prop="locaion" label="地区" size="mini">
+                 <el-form-item prop="location" label="地区" size="mini">
                     <el-input v-model="registerForm.location" placeholder="地区"></el-input>
                 </el-form-item>
                  <el-form-item prop="introduction" label="简介" size="mini">
@@ -74,11 +93,34 @@ export default {
                 location: '',
                 introduction: ''
             },
-            tableData: []
+            tableData: [],
+            tempData: [],
+            select_word: '',
+            pageSize: 5,
+            currentPage: 1
         
         }
     },
-
+    computed:{
+        // 计算当前索索结果表里的数据
+        data(){
+        return this.tableData.slice((this.currentPage-1)*this.pageSize,this.this.currentPage*this.pageSize)  }
+    },
+   watch:{
+    //    搜索框里面的内容发生变化的时候，搜索结果table列表也跟着发生编号
+       select_word: function(){
+           if(this.select_word == ''){
+               this.tableData = this.tempData;
+           }else{
+               this.tableData=[];
+               for(let item of this.tempData){
+                   if(item.name.includes(this.select_word)){
+                       this.tableData.push(item);
+                   }
+               }
+           }
+       }
+   },
     created(){
         this.getData();
     },
@@ -86,8 +128,10 @@ export default {
     methods:{
         //查询所有歌手
         getData(){
-            this.tableData= [];
+            this.tempData = [];
+            this.tableData = [];
             getAllSinger().then(res => {
+                this.tempData=res;
                 this.tableData=res;
             })
         },
@@ -97,7 +141,7 @@ export default {
             let params=new URLSearchParams();
             params.append('name',this.registerForm.name);
             params.append('gender',this.registerForm.gender);
-            params.append('pic','img/singerPic/1.jpg');
+            params.append('pic','img/singerPic/default.jpg');
             params.append('birth',datetime);
             params.append('location',this.registerForm.location);
             params.append('introduction',this.registerForm.introduction);
@@ -115,6 +159,10 @@ export default {
                 console.log(err);
             })
             this.centerDialogVisible=false;
+        },
+        //更新图片
+        uploadUrl(id){
+            return `${this.$store.state.HOST}/singer/updateSingerPic?id=${id}`
         }
     }
 }
@@ -133,4 +181,13 @@ export default {
         margin-bottom: 5px;
         overflow: hidden;
     }
+    .handle-input{
+        width:300px;
+        display: inline-block;
+    }
+    .pagination{
+        display: flex;
+        justify-content: center;
+    }
+    
 </style>
