@@ -7,7 +7,7 @@
                 
             </div>
         </div>
-        <el-table size="mini" border style="width:100%" height="500px" :data="tableData">
+        <el-table size="mini" border style="width:100%" height="680px" :data="data">
             <el-table-column label="歌手图片" width="110" align="center">
                 <template slot-scope="scope">
                     <div class="singer-img">
@@ -30,7 +30,7 @@
                     {{ attachBirth(scope.row.birth) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="location" label="所在地区" width="100" align="center"></el-table-column>
+            <el-table-column prop="location" label="地区" width="100" align="center"></el-table-column>
             <el-table-column label="简介">
                 <template slot-scope="scope">
                 <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
@@ -104,7 +104,8 @@ export default {
     computed:{
         // 计算当前索索结果表里的数据
         data(){
-        return this.tableData.slice((this.currentPage-1)*this.pageSize,this.this.currentPage*this.pageSize)  }
+        return this.tableData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)  
+	}
     },
    watch:{
     //    搜索框里面的内容发生变化的时候，搜索结果table列表也跟着发生编号
@@ -148,8 +149,8 @@ export default {
 
             setSinger(params)
             .then(res =>{
-                if(res.code == 1)
-                {
+                if(res.code == 1)              {
+	    	    this.getData();	
                     this.notify("添加成功","success");
                 }else{
                     this.notify("添加失败","error");
