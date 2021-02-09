@@ -13,6 +13,6 @@ export const setSinger= (params) => post(`singer/add`,params);
 export const updateSinger = (params) => post(`singer/update`,params);
 
 //删除歌手
-export const deleteSinger = (params) => get(`singer/delete`,params);
+export const deleteSinger = (id) => get(`singer/delete?id=${id}`);
 
 

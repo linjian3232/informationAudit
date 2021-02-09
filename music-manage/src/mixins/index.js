@@ -61,6 +61,14 @@ export const mixin = {
                 type: 'error'
             });
         }
+    },
+
+    //删除歌手
+    handleDelete(id){
+        this.idx=id;
+        this.delVisible=true;
     }
+
+
     }
 }

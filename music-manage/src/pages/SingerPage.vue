@@ -38,7 +38,8 @@
             </el-table-column>
             <el-table-column label="操作" width="150" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -111,11 +112,20 @@
                 <el-button size="mini" @click="editSave">确定</el-button>
             </span>
         </el-dialog>
+
+        <!-- 删除歌手时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="删除歌手" :visible.sync="delVisible" width="300px" center>           
+            <div aligen="center">删除歌手后不可恢复，是否确认删除？</div>
+            <span slot="footer">
+                <el-button size="mini" @click=" delVisible = false">取消</el-button>
+                <el-button size="mini" @click="deleteRow">确定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import {setSinger,getAllSinger,updateSinger} from '../api/index';
+import {setSinger,getAllSinger,updateSinger,deleteSinger} from '../api/index';
 import {mixin} from '../mixins/index';
 export default {
     mixins:[mixin],
@@ -123,6 +133,7 @@ export default {
         return{
             centerDialogVisible:false,//添加歌手弹窗的显示状态
             editVisible:false,//编辑歌手弹窗的显示状态
+            delVisible:false,//删除歌手弹窗的显示状态
             registerForm:{ //添加框
                 name:'',
                 gender:'',
@@ -142,7 +153,8 @@ export default {
             tempData: [],
             select_word: '',
             pageSize: 5,
-            currentPage: 1
+            currentPage: 1,
+            idx: -1
         
         }
     },
@@ -249,6 +261,23 @@ export default {
         //更新图片
         uploadUrl(id){
             return `${this.$store.state.HOST}/singer/updateSingerPic?id=${id}`
+        },
+
+        // 删除某个歌手
+        deleteRow(){
+             deleteSinger(this.idx)
+            .then(res =>{
+                if(res)              {
+	    	        this.getData();	
+                    this.notify("删除成功","success");
+                }else{
+                    this.notify("删除失败","error");
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+            this.delVisible=false;
         }
     }
 }
@@ -275,5 +304,12 @@ export default {
         display: flex;
         justify-content: center;
     }
-    
+    .edit_button{
+        color:white;
+        background-color: #77ac98;
+    }
+    .delete_button{
+        color:white;
+        background-color:#8f4b2e;  
+    }
 </style>
