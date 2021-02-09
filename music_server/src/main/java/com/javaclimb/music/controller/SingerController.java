@@ -75,7 +75,6 @@ public class SingerController {
         String id=request.getParameter("id").trim();
         String name=request.getParameter("name").trim();
         String gender=request.getParameter("gender").trim();
-        String pic=request.getParameter("pic").trim();
         String birth=request.getParameter("birth").trim();
         String location=request.getParameter("location").trim();
         String introduction=request.getParameter("introduction").trim();
@@ -92,11 +91,10 @@ public class SingerController {
         singer.setId(Integer.parseInt(id));
         singer.setName(name);
         singer.setGender(new Byte(gender));
-        singer.setPic(pic);
         singer.setBirth(birthDate);
         singer.setLocation(location);
         singer.setIntroduction(introduction);
-        boolean flag=singerService.insert(singer);
+        boolean flag=singerService.update(singer);
         if(flag){
             jsonObject.put(Consts.CODE,1);
             jsonObject.put(Consts.MSG,"修改歌手成功");
