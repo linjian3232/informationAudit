@@ -151,7 +151,14 @@ public class SingerController {
         return singerService.selectByPrimaryKey(Integer.parseInt(gender));
 
     }
-//    更新歌手图片
+
+
+    /**
+     * 更新歌手图片
+     * @param avatorFile
+     * @param id
+     * @return
+     */
     @RequestMapping(value= "/updateSingerPic",method = RequestMethod.POST)
     public Object updateSingerPic(@RequestParam("file")MultipartFile avatorFile,@RequestParam("id")int id){
         JSONObject jsonObject= new JSONObject();

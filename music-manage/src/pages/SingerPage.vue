@@ -2,12 +2,14 @@
     <div class="table">
         <div class="container">
             <div class="handle-box">
+                <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
                 <el-input v-model="select_word" placeholder="请输入歌手名" class="handle-input" size="mini"></el-input>
                 <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌手</el-button>
                 
             </div>
         </div>
-        <el-table size="mini" border style="width:100%" height="680px" :data="data">
+        <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" widt="40"></el-table-column>
             <el-table-column label="歌手图片" width="110" align="center">
                 <template slot-scope="scope">
                     <div class="singer-img">
@@ -34,6 +36,11 @@
             <el-table-column label="简介">
                 <template slot-scope="scope">
                 <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
+                </template>
+            </el-table-column>
+            <el-table-column label="歌曲管理" width="110" align="center">
+                <template slot-scope="scope">
+                <el-button  size="mini" @click="songEdit(scope.row.id,scope.row.name)">歌曲管理</el-button>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="150" align="center">
@@ -154,7 +161,8 @@ export default {
             select_word: '',
             pageSize: 5,
             currentPage: 1,
-            idx: -1
+            idx: -1,
+            multipleSelection:[]
         
         }
     },
@@ -194,6 +202,7 @@ export default {
             getAllSinger().then(res => {
                 this.tempData=res;
                 this.tableData=res;
+                this.currentPage=1;
             })
         },
         addSinger(){
@@ -278,6 +287,10 @@ export default {
                 console.log(err);
             })
             this.delVisible=false;
+        },
+        songEdit(id,name)
+        {
+            this.$router.push({path:`/Song`,query:{id,name}});
         }
     }
 }
