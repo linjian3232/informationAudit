@@ -17,29 +17,49 @@
                     <div class="song-img">
                         <img :src="getUrl(scope.row.pic)" style="width:100%"/>
                     </div>
-                   <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatorUpload" 
-		    :on-success="handleAvatorSuccess">
-                        <el-button size="mini">更新图片</el-button>
-                    </el-upload>
+                    <div class="play" @click="setSongUrl(scope.row.url,scope.row.name)">
+                        <div v-if="toggle == scope.row.name">
+                            <svg class="icon">
+                                <use xlink:href="#icon-zanting"></use>
+                            </svg>
+                        </div>
+                        <div v-if="toggle != scope.row.name">
+                            <svg class="icon">
+                                <use xlink:href="#icon-bofanganniu"></use>
+                            </svg>
+                        </div>
+                    </div>
                 </template>
             </el-table-column>
             <el-table-column prop="name" label="歌手-歌名" width="120" align="center"></el-table-column>
             <el-table-column prop="introduction" label="专辑" width="150" align="center"></el-table-column>
             <el-table-column label="歌词" align="center">
                 <template slot-scope="scope">
-                  <ul style="height:100px;overflow:scroll;">
-                    <li v-for="(item,index) in parseLyric(scope.row.lyric)" :key="index">
-                      {{item}}
-                    </li>
-                  </ul>
-                   
+                    <ul style="height:100px;overflow:scroll;">
+                        <li v-for="(item,index) in parseLyric(scope.row.lyric)" :key="index">
+                            {{item}}
+                        </li>
+                    </ul>
+                </template>
+            </el-table-column>
+            <el-table-column label="资源更新" align="center" width="100">
+                <template slot-scope="scope">
+                    <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatorUpload" 
+                        :on-success="handleAvatorSuccess">
+                        <el-button  class="update_button" size="mini">更新图片</el-button>
+                    </el-upload>
+                    <br/>
+                    <el-upload :action="uploadSongUrl(scope.row.id)" :before-upload="beforeSongUpload" 
+                        :on-success="handleSongSuccess" >
+                        <el-button  class="update_button" size="mini">更新歌曲</el-button>
+                    </el-upload>
                 </template>
             </el-table-column>
 
             <el-table-column label="操作" width="150" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button> 
+                    <el-button size="mini" @click="handleEdit(scope.row)" class= "edit_button">编辑</el-button>
+                    <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)" class="delete_button">删除</el-button> 
                 </template>
             </el-table-column>
         </el-table>
@@ -80,225 +100,255 @@
             </span>
         </el-dialog>
 
-    <!-- 修改歌手时弹出窗口 visible表示是否可见 -->
-    <el-dialog
-      title="编辑歌曲"
-      :visible.sync="editVisible"
-      width="400px"
-      center
-    >
-      <el-form :model="editForm" ref="editForm" label-width="80px">
-        <el-form-item prop="name" label="歌手-歌名" size="mini">
-          <el-input v-model="editForm.name" placeholder="歌手-歌名"></el-input>
-        </el-form-item>
-        <el-form-item prop="introduction" label="专辑" size="mini">
-          <el-input
-            v-model="editForm.introduction"
-            placeholder="专辑"
-          ></el-input>
-        </el-form-item>
-          <el-form-item prop="lyric" label="歌词" size="mini">
-          <el-input
-            v-model="editForm.lyric"
-            placeholder="歌词"
-            type="textarea"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button size="mini" @click="editVisible = false">取消</el-button>
-        <el-button size="mini" @click="editSave">确定</el-button>
-      </span>
-    </el-dialog>
+        <el-dialog title="修改歌曲" :visible.sync="editVisible" width="400px" center>
+            <el-form :model="form" ref="form" label-width="80px">
+                <el-form-item prop="name" label="歌手-歌名" size="mini">
+                    <el-input v-model="form.name" placeholder="歌手-歌名"></el-input>
+                </el-form-item>                
+                <el-form-item prop="introduction" label="专辑" size="mini">
+                    <el-input v-model="form.introduction" placeholder="专辑"></el-input>
+                </el-form-item> 
+                <el-form-item prop="lyric" label="歌词" size="mini">
+                    <el-input v-model="form.lyric" placeholder="歌词" type="textarea"></el-input>
+                </el-form-item> 
+                
+            </el-form>
+            <span slot="footer">
+                <el-button size="mini" @click="editVisible = false">取消</el-button>
+                <el-button size="mini" @click="editSave">确定</el-button>                
+            </span>
+        </el-dialog>
 
-    <!-- 删除歌手时弹出窗口 visible表示是否可见 -->
-    <el-dialog title="删除歌曲" :visible.sync="delVisible" width="300px" center>
-      <div aligen="center">删除歌曲后不可恢复，是否确认删除？</div>
-      <span slot="footer">
-        <el-button size="mini" @click="delVisible = false">取消</el-button>
-        <el-button size="mini" @click="deleteRow">确定</el-button>
-      </span>
-    </el-dialog>
-  </div>
+        <el-dialog title="删除歌曲" :visible.sync="delVisible" width="300px" center>
+            <div align="center">删除不可恢复，是否确定删除？</div>
+            <span slot="footer">
+                <el-button size="mini" @click="delVisible = false">取消</el-button>
+                <el-button size="mini" @click="deleteRow">确定</el-button>                
+            </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
 import { mixin } from '../mixins/index';
-
-import { songOfSingerId,updateSong,deleteSong} from '../api/index';
+import {mapGetters} from 'vuex';
+import '@/assets/js/iconfont.js';
+import {songOfSingerId,updateSong,delSong} from '../api/index';
 
 export default {
-  mixins: [mixin],
-  data() {
-    return {
-      singerId: '',
-      singerName: '',
-      centerDialogVisible: false, //添加歌手弹窗的显示状态
-      editVisible: false, //编辑歌手弹窗的显示状态
-      delVisible: false, //删除歌手弹窗的显示状态
-      registerForm: {
-        //添加框
-        name: '',
-        singerName: '',
-        introduction: '',
-        lyric: ''
-      },
-      editForm: {
-        //编辑框
-        id: '',
-        name: '',
-
-        introduction: '',
-        lyric: ''
-      },
-      tableData: [],
-      tempData: [],
-      select_word: '',
-      pageSize: 5,
-      currentPage: 1,
-      idx: -1,
-      multipleSelection: [],
-    }
-  },
-  computed: {
-    // 计算当前索索结果表里的数据
-    data() {
-            return this.tableData.slice((this.currentPage - 1) * this.pageSize,this.currentPage * this.pageSize)
-   
-    }
-  },
-  watch: {
-    //    搜索框里面的内容发生变化的时候，搜索结果table列表也跟着发生编号
-    select_word: function () {
-      if (this.select_word == '') {
-        this.tableData = this.tempData;
-      } else {
-        this.tableData = [];
-        for (let item of this.tempData) {
-          if (item.name.includes(this.select_word)) {
-            this.tableData.push(item);
-          }
+    mixins: [mixin],
+    data(){
+        return{
+            singerId: '',               //歌手id
+            singerName: '',             //歌手名
+            centerDialogVisible: false, //添加弹窗是否显示
+            editVisible: false,         //编辑弹窗是否显示
+            delVisible: false,          //删除弹窗是否显示
+            registerForm:{     
+	     //添加框
+                name: '',
+                singerName: '',                
+                introduction: '',
+                lyric: ''
+            },
+            form:{      //编辑框
+                id: '',
+                name: '',
+                introduction: '',
+                lyric: ''
+            },
+            tableData: [],
+            tempData: [],
+            select_word: '',
+            pageSize: 5,    //分页每页大小
+            currentPage: 1,  //当前页
+            idx: -1,          //当前选择项
+            multipleSelection: [],   //哪些项已经打勾
+            toggle: false           //播放器的图标状态
         }
-      }
-    }
-  },
-  created() {
-      this.singerId=this.$route.query.id;
-       this.singerName=this.$route.query.name;
-    this.getData();
-  },
-
-  methods: {
-    handleCurrentChange(val) {
-      this.currentPage = val;
     },
-    //查询所有歌手
-    getData() {
-      this.tempData = [];
-      this.tableData = [];
-      songOfSingerId( this.singerId).then(res => {
-        this.tempData = res;
-        this.tableData = res;
-        this.currentPage=1;
-      })
+    computed:{
+        ...mapGetters([
+            'isPlay'
+        ]),
+        //计算当前搜索结果表里的数据
+        data(){
+            return this.tableData.slice((this.currentPage - 1) * this.pageSize,this.currentPage * this.pageSize)
+        }
     },
-    addSong() {
-      let _this=this;
-      var form= new FormData(document.getElementById('tf'));
-      form.append('singerId',this.singerId);
-      form.set('name',this.singerName+'-'+form.get('name'));
-      if(!form.get('lyric')){
-          form.set('lyric','[00:00:00]暂无歌词');
-      }
-      var req = new XMLHttpRequest();
-      req.onreadystatechange = function(){
-        //  req.readyState == 4 获取到返回的完整数据
-	//   req.status == 200 和后台正常交互完成
-          if(req.readyState == 4 && req.status==200){
-              let res = JSON.parse(req.response);
-            if(res.code){
-                _this.getData();
-                _this.registerForm = {};
-                _this.notify(res.msg,'success');
+    watch:{
+        //搜索框里面的内容发生变化的时候，搜索结果table列表的内容跟着它的内容发生变化
+        select_word: function(){
+            if(this.select_word == ''){
+                this.tableData = this.tempData;
             }else{
-                _this.notify('保存失败','error');
+                this.tableData = [];
+                for(let item of this.tempData){
+                    if(item.name.includes(this.select_word)){
+                        this.tableData.push(item);
+                    }
+                }
             }
-          }
-          
-      }
-      req.open('post',`${_this.$store.state.HOST}/song/add`,false);
-      req.send(form);
-      _this.centerDialogVisible = false;
+        }
     },
-    handleEdit(row) {
-      this.editVisible = true;
-      this.editForm = {
-        id: row.id,
-        name: row.name,
-        introduction: row.introduction,
-        lyric: row.lyric
-      };
+    created(){
+        this.singerId = this.$route.query.id;
+        this.singerName = this.$route.query.name;
+        this.getData();
     },
+    destroyed() {
+        this.$store.commit('setIsPlay',false);
+    },
+    methods:{
+        //获取当前页
+        handleCurrentChange(val){
+            this.currentPage = val;
+        },
+        //查询所有歌手
+        getData(){
+            this.tempData = [];
+            this.tableData = [];
+            songOfSingerId(this.singerId).then(res => {
+                this.tempData = res;
+                this.tableData = res;
+                this.currentPage = 1;
+            })
+        },
+        //添加歌手
+        addSong(){
+            let _this = this;
+            var form = new FormData(document.getElementById('tf'));
+            form.append('singerId',this.singerId);
+            form.set('name',this.singerName+'-'+form.get('name'));
+            if(!form.get('lyric')){
+                form.set('lyric','[00:00:00]暂无歌词');
+            }
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function(){
+                //req.readyState == 4 获取到返回的完整数据
+                //req.status == 200 和后台正常交互完成
+                if(req.readyState == 4 && req.status == 200){
+                    let res = JSON.parse(req.response);
+                    if(res.code){
+                        _this.getData();
+                        _this.registerForm = {};
+                        _this.notify(res.msg,'success');
+                    }else{
+                         _this.notify('保存失败','error');
+                    }
+                }
+            }
+            req.open('post',`${_this.$store.state.HOST}/song/add`,false);
+            req.send(form);
+            _this.centerDialogVisible = false;
+        },
+        //弹出编辑页面
+        handleEdit(row){
+            this.editVisible = true;
+            this.form = {
+                id: row.id,
+                name: row.name,
+                introduction: row.introduction,
+                lyric: row.lyric
+            }
+        },
+        //保存编辑页面修改的数据
+        editSave(){
+            let params = new URLSearchParams();
+            params.append('id',this.form.id);
+            params.append('name',this.form.name);
+            params.append('introduction',this.form.introduction);
+            params.append('lyric',this.form.lyric);
 
-    //编辑保存歌手信息
-    editSave() {
-      
-      let params = new URLSearchParams();
-      params.append("id", this.editForm.id);
-      params.append("name", this.editForm.name);
-      params.append("introduction", this.editForm.introduction);
-      params.append("lyric", this.editForm.lyric);
-      updateSong(params)
-        .then((res) => {
-          if (res.code == 1) {
-            this.getData();
-            this.notify("修改成功", "success");
-          } else {
-            this.notify("修改失败", "error");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      this.editVisible = false;
-    },
-    //更新图片
-    uploadUrl(id) {
-      // return `${this.$store.state.HOST}/singer/updateSingerPic?id=${id}`;
-    },
-
-    // 删除某个歌手
-    deleteRow() {
-      deleteSong(this.idx)
-        .then((res) => {
-          if (res) {
-            this.getData();
-            this.notify("删除成功", "success");
-          } else {
-            this.notify("删除失败", "error");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      this.delVisible = false;
-    },
-
-    parseLyric(text){
-      let lines=text.split("\n");
-      let pattern= /\[\d{2}:\d{2}.(d{3}|\d{2})\]/g;
-      let result=[];
-      for (let item of lines){
-        let value=item.replace(pattern,'');
-        result.push(value);
-      }
-      return result;
-    }
-    // songEdit(id, name) {
-    //   this.$router.push({ path: `/Song`, query: { id, name } });
-    // },
-  },
-};
+            updateSong(params)
+            .then(res => {
+                if(res.code == 1){
+                    this.getData();
+                    this.notify("修改成功","success");
+                }else{
+                    this.notify("修改失败","error");
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+            this.editVisible = false;
+        },
+        //更新图片
+        uploadUrl(id){
+            return `${this.$store.state.HOST}/song/updateSongPic?id=${id}`
+        },
+        //删除一名歌手
+        deleteRow(){
+            delSong(this.idx)
+            .then(res => {
+                if(res){
+                    this.getData();
+                    this.notify("删除成功","success");
+                }else{
+                    this.notify("删除失败","error");
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+            this.delVisible = false;
+        },
+        //解析歌词
+        parseLyric(text){
+            let lines = text.split("\n");
+            let pattern = /\[\d{2}:\d{2}.(\d{3}|\d{2})\]/g;
+            let result = [];
+            for(let item of lines){
+                let value = item.replace(pattern,'');
+                result.push(value);
+            }
+            return result;
+        },
+        //上传歌曲之前的校验
+        beforeSongUpload(file){
+            var testMsg = file.name.substring(file.name.lastIndexOf('.') + 1);
+            if(testMsg!='mp3'){
+                this.$message({
+                    message: '上传文件只能是mp3格式',
+                    type: 'error'
+                });
+                return false;
+            }
+            return true;
+        },
+        //上传歌曲成功之后要做的工作
+        handleSongSuccess(res){
+            let _this = this;
+            if(res.code == 1){
+                _this.getData();
+                _this.$notify({
+                    title: '上传成功',
+                    type: 'success'
+                });
+            }else{
+                _this.$notify({
+                    title: '上传失败',
+                    type: 'error'
+                });
+            }
+        },
+        //更新歌曲url
+        uploadSongUrl(id){
+            return `${this.$store.state.HOST}/song/updateSongUrl?id=${id}`
+        },
+        //切换播放歌曲
+        setSongUrl(url,name) {
+            this.toggle = name;
+            this.$store.commit('setUrl',this.$store.state.HOST + url);
+            if(this.isPlay){
+                this.$store.commit('setIsPlay',false);
+            }else{
+                this.$store.commit('setIsPlay',true);
+            }
+        }
+    }   
+}
 </script>
 
 <style scoped>
@@ -322,6 +372,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+   
 .edit_button {
   color: white;
   background-color: #77ac98;
@@ -330,4 +381,24 @@ export default {
   color: white;
   background-color: #8f4b2e;
 }
+.play {
+        position: absolute;
+        z-index: 100;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        top: 18px;
+        left: 15px;
+    }
+
+    .icon {
+        width: 2em;
+        height: 2em;
+        color: white;
+        fill: currentColor;
+        overflow: hidden;
+    }
 </style>

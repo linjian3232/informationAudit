@@ -19,7 +19,19 @@ body {
 a {
   text-decoration: none
 }
+.edit_button{
+  color:white;
+  background-color: #77ac98;
+}
+.delete_button{
+  color:white;
+  background-color:#8f4b2e;  
+}
 
+.update_button{
+  color:white;
+  background-color: #009393;
+}
 .content-box {
   position: absolute;
   left: 150px;
@@ -32,7 +44,7 @@ a {
   background: #f0f0f0;
 }
 
-.content {
+.content {  
   width: auto;
   padding: 20px;
 }

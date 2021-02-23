@@ -317,12 +317,5 @@ export default {
         display: flex;
         justify-content: center;
     }
-    .edit_button{
-        color:white;
-        background-color: #77ac98;
-    }
-    .delete_button{
-        color:white;
-        background-color:#8f4b2e;  
-    }
+
 </style>
