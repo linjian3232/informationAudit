@@ -35,14 +35,14 @@ public interface SongService {
 
 
     /**
-     * 根据歌名模糊查询列表
+     * 根据歌名精确查询列表
      */
     public List<Song> songOfName(String name);
 
     /**
      * 根据歌手id查询
-     * @param id
-     * @returnId
+     * @param singerId
+     * @return
      */
     public List<Song> songOfSingerId(Integer singerId);
 }

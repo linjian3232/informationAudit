@@ -37,13 +37,13 @@ public interface SongMapper {
 
 
     /**
-     * 根据歌名模糊查询列表
+     * 根据歌名精确查询列表
      */
     public List<Song> songOfName(String name);
 
     /**
      * 根据歌手id查询
-     * @param id
+     * @param singerId
      * @returnId
      */
     public List<Song> songOfSingerId(Integer singerId);

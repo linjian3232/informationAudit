@@ -65,7 +65,7 @@ public class SongServiceImpl implements SongService {
     }
 
     /**
-     * 根据歌名模糊查询列表
+     * 根据歌名精确查询列表
      *
      * @param name
      */
@@ -77,7 +77,7 @@ public class SongServiceImpl implements SongService {
     /**
      * 根据歌手id查询
      *
-     * @param id
+     * @param singerId
      * @returnId
      */
     @Override

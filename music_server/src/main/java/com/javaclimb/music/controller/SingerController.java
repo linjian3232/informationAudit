@@ -137,7 +137,7 @@ public class SingerController {
      * 根据歌手名字查询
      */
     @RequestMapping(value="/singerOfName",method = RequestMethod.GET)
-    public Object singerOfNmae(HttpServletRequest request){
+    public Object singerOfName(HttpServletRequest request){
         String name=request.getParameter("name").trim();
         return singerService.singerOfName("%"+name+"%");
     }
@@ -148,7 +148,7 @@ public class SingerController {
     @RequestMapping(value="/singerOfGender",method = RequestMethod.GET)
     public Object singerOfGender(HttpServletRequest request){
         String gender=request.getParameter("gender").trim();
-        return singerService.selectByPrimaryKey(Integer.parseInt(gender));
+        return singerService.singerOfGender(Integer.parseInt(gender));
 
     }
 
@@ -170,7 +170,8 @@ public class SingerController {
 //        currentTimeMillis是一个当前时间精确到毫秒的长字符串，这样做的目的是避免同时上传两个文件的时候其中一个被覆盖掉
 
         String fileName = System.currentTimeMillis()+avatorFile.getOriginalFilename();
-        String filePath =System.getProperty("user.dir")+System.getProperty("file.separator")+"img"+System.getProperty("file.separator")+"singerPic";
+        String filePath =System.getProperty("user.dir")+System.getProperty("file.separator")+"img"
+		+System.getProperty("file.separator")+"singerPic";
         File file1 = new File(filePath);
 //        如果文件路劲不存在，创建新的路劲
         if(!file1.exists()){

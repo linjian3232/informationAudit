@@ -230,4 +230,22 @@ public class SongController {
             return jsonObject;
         }
     }
+
+    /**
+     * 根据歌曲id查询
+     */
+    @RequestMapping(value="/detail" ,method = RequestMethod.GET)
+    public Object detail(HttpServletRequest request){
+        String songId= request.getParameter("songId");
+        return songService.selectByPrimaryKey(Integer.parseInt(songId));
+    }
+
+    /**
+     * 根据歌曲名字查询
+     */
+    @RequestMapping(value="/songOfSongName" ,method = RequestMethod.GET)
+    public Object songOfSongName(HttpServletRequest request){
+        String songName= request.getParameter("songName");
+        return songService.songOfName(songName);
+    }
 }

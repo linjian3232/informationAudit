@@ -211,7 +211,7 @@ export default {
             let params=new URLSearchParams();
             params.append('name',this.registerForm.name);
             params.append('gender',this.registerForm.gender);
-            params.append('pic','img/singerPic/default.jpg');
+            params.append('pic','/img/singerPic/default.jpg');
             params.append('birth',datetime);
             params.append('location',this.registerForm.location);
             params.append('introduction',this.registerForm.introduction);
@@ -227,7 +227,7 @@ export default {
             })
             .catch(err => {
                 console.log(err);
-            })
+            });
             this.centerDialogVisible=false;
         },
         handleEdit(row){
