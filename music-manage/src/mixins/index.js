@@ -15,13 +15,13 @@ export const mixin = {
     // 获取性别中文
     changeGender(value){
         if(value == '0'){
-            return '女';
+            return "女";
         }
         if(value == '1'){
-            return '男';
+            return "男";
         }
         if(value == '2'){
-            return '组合';
+            return "组合";
         }
         if(value == '3'){
             return '不明';

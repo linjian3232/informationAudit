@@ -4,16 +4,16 @@
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
                 <el-input v-model="select_word" placeholder="请输入歌手名" class="handle-input" size="mini"></el-input>
-                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌手</el-button>
+                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加用户</el-button>
                 
             </div>
         </div>
         <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
             <el-table-column type="selection" widt="40"></el-table-column>
-            <el-table-column label="歌手图片" width="110" align="center">
+            <el-table-column label="用户图片" width="110" align="center">
                 <template slot-scope="scope">
-                    <div class="singer-img">
-                        <img :src="getUrl(scope.row.pic)" style="width:100%"/>  
+                    <div class="consumer-img">
+                        <img :src="getUrl(scope.row.avator)" style="width:100%"/>  
                     </div>
                     <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatorUpload" 
 		    :on-success="handleAvatorSuccess">
@@ -21,28 +21,22 @@
                     </el-upload>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="歌手" width="120" align="center"></el-table-column>
+            <el-table-column prop="username" label="用户名" width="120" align="center"></el-table-column>
             <el-table-column label="性别" width="50" align="center">
                 <template slot-scope="scope">
                     {{ changeGender(scope.row.gender) }}
                 </template>
             </el-table-column>
+            <el-table-column prop="phoneNumber" label="手机号" width="120" align="center"></el-table-column>
+            <el-table-column prop="email" label="邮箱" width="240" align="center"></el-table-column>
+
             <el-table-column label="生日" width="120" align="center">
                  <template slot-scope="scope">
                     {{ attachBirth(scope.row.birth) }}
                 </template>
             </el-table-column>
+            <el-table-column prop="introduction" label="签名" align="center"></el-table-column>
             <el-table-column prop="location" label="地区" width="100" align="center"></el-table-column>
-            <el-table-column label="简介">
-                <template slot-scope="scope">
-                <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
-                </template>
-            </el-table-column>
-            <el-table-column label="歌曲管理" width="110" align="center">
-                <template slot-scope="scope">
-                <el-button  size="mini" @click="songEdit(scope.row.id,scope.row.name)">歌曲管理</el-button>
-                </template>
-            </el-table-column>
             <el-table-column label="操作" width="150" align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -61,57 +55,72 @@
         </div>
 
         <!-- 添加歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="添加歌手" :visible.sync="centerDialogVisible" width="400px" center>           
+        <el-dialog title="添加新用户" :visible.sync="centerDialogVisible" width="400px" center>           
             <el-form :model="registerForm" ref="registerForm" label-width="80px">
-                <el-form-item prop="name" label="歌手名" size="mini">
-                    <el-input v-model="registerForm.name" placeholder="歌手名"></el-input>
+                <el-form-item prop="username" label="用户名" size="mini">
+                    <el-input v-model="registerForm.username" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item prop="password" label="密码" size="mini">
+                    <el-input type="password" v-model="registerForm.password" placeholder="密码"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" size="mini">
                     <el-radio-group v-model="registerForm.gender">
                         <el-radio :label="0">女</el-radio>
                         <el-radio :label="1">男</el-radio>
-                        <el-radio :label="2">组合</el-radio>
-                        <el-radio :label="3">不明</el-radio>
                     </el-radio-group>
+                </el-form-item>
+                <el-form-item prop="phoneNumber" label="手机号" size="mini">
+                    <el-input v-model="registerForm.phoneNumber" placeholder="手机号"></el-input>
+                </el-form-item>
+                <el-form-item prop="email" label="用户名" size="mini">
+                    <el-input v-model="registerForm.email" placeholder="邮箱"></el-input>
                 </el-form-item>
                 <el-form-item prop="birth" label="生日" size="mini">
                     <el-date-picker type="date" v-model="registerForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
                 </el-form-item>
+                <el-form-item prop="introduction" label="签名" size="mini">
+                    <el-input v-model="registerForm.introduction" placeholder="签名"></el-input>
+                </el-form-item>
                  <el-form-item prop="location" label="地区" size="mini">
                     <el-input v-model="registerForm.location" placeholder="地区"></el-input>
                 </el-form-item>
-                 <el-form-item prop="introduction" label="简介" size="mini">
-                    <el-input v-model="registerForm.introduction" placeholder="简介" type="textarea"></el-input>
-                </el-form-item>
+                 
             </el-form>
             <span slot="footer">
                 <el-button size="mini" @click="centerDialogVisible = false">取消</el-button>
-                <el-button size="mini" @click="addSinger">确定</el-button>
+                <el-button size="mini" @click="addConsumer">确定</el-button>
             </span>
         </el-dialog>
 
         <!-- 修改歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="编辑歌手" :visible.sync="editVisible" width="400px" center>           
+        <el-dialog title="修改用户" :visible.sync="editVisible" width="400px" center>           
             <el-form :model="editForm" ref="editForm" label-width="80px">
-                <el-form-item prop="name" label="歌手名" size="mini">
-                    <el-input v-model="editForm.name" placeholder="歌手名"></el-input>
+                 <el-form-item prop="username" label="用户名" size="mini">
+                    <el-input v-model="editForm.username" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item prop="password" label="密码" size="mini">
+                    <el-input type="password" v-model="editForm.password" placeholder="密码"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" size="mini">
                     <el-radio-group v-model="editForm.gender">
                         <el-radio :label="0">女</el-radio>
                         <el-radio :label="1">男</el-radio>
-                        <el-radio :label="2">组合</el-radio>
-                        <el-radio :label="3">不明</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="生日" size="mini">
+                <el-form-item prop="phoneNumber" label="手机号" size="mini">
+                    <el-input v-model="editForm.phoneNumber" placeholder="手机号"></el-input>
+                </el-form-item>
+                <el-form-item prop="email" label="用户名" size="mini">
+                    <el-input v-model="editForm.email" placeholder="邮箱"></el-input>
+                </el-form-item>
+                <el-form-item prop="birth" label="生日" size="mini">
                     <el-date-picker type="date" v-model="editForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
+                </el-form-item>
+                <el-form-item prop="introduction" label="签名" size="mini">
+                    <el-input v-model="editForm.introduction" placeholder="签名"></el-input>
                 </el-form-item>
                  <el-form-item prop="location" label="地区" size="mini">
                     <el-input v-model="editForm.location" placeholder="地区"></el-input>
-                </el-form-item>
-                 <el-form-item prop="introduction" label="简介" size="mini">
-                    <el-input v-model="editForm.introduction" placeholder="简介" type="textarea"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -121,7 +130,7 @@
         </el-dialog>
 
         <!-- 删除歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="删除歌手" :visible.sync="delVisible" width="300px" center>           
+        <el-dialog title="删除用户" :visible.sync="delVisible" width="300px" center>           
             <div aligen="center">删除歌手后不可恢复，是否确认删除？</div>
             <span slot="footer">
                 <el-button size="mini" @click=" delVisible = false">取消</el-button>
@@ -132,7 +141,7 @@
 </template>
 
 <script>
-import {setSinger,getAllSinger,updateSinger,deleteSinger} from '../api/index';
+import {getAllConsumer,setConsumer,updateConsumer,deleteConsumer} from '../api/index';
 import {mixin} from '../mixins/index';
 export default {
     mixins:[mixin],
@@ -142,19 +151,26 @@ export default {
             editVisible:false,//编辑歌手弹窗的显示状态
             delVisible:false,//删除歌手弹窗的显示状态
             registerForm:{ //添加框
-                name:'',
+                username:'',
+                password:'',
                 gender:'',
+                phoneNumber:'',
+                email:'',
                 birth: '',
-                location: '',
-                introduction: ''
+                introduction: '',
+                location: ''
+                
             },
             editForm:{ //编辑框
                 id: '',
-                name:'',
+                username:'',
+                password:'',
                 gender:'',
+                phoneNumber:'',
+                email:'',
                 birth: '',
-                location: '',
-                introduction: ''
+                introduction: '',
+                location: ''
             },
             tableData: [],
             tempData: [],
@@ -180,7 +196,7 @@ export default {
            }else{
                this.tableData=[];
                for(let item of this.tempData){
-                   if(item.name.includes(this.select_word)){
+                   if(item.username.includes(this.select_word)){
                        this.tableData.push(item);
                    }
                }
@@ -195,28 +211,33 @@ export default {
         handleCurrentChange(val){
             this.currentPage=val;
         },
-        //查询所有歌手
+        //查询所有用户
         getData(){
             this.tempData = [];
             this.tableData = [];
-            getAllSinger().then(res => {
+            getAllConsumer().then(res => {
                 this.tempData=res;
                 this.tableData=res;
                 this.currentPage=1;
             })
         },
-        addSinger(){
+
+        //添加用户
+        addConsumer(){
             let d=this.registerForm.birth;
             let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
             let params=new URLSearchParams();
-            params.append('name',this.registerForm.name);
+            params.append('username',this.registerForm.name);
+            params.append('password',this.registerForm.password);
             params.append('gender',this.registerForm.gender);
-            params.append('pic','/img/singerPic/default.jpg');
+            params.append('phoneNumber',this.registerForm.phoneNumber);
+            params.append('email',this.registerForm.email);
             params.append('birth',datetime);
-            params.append('location',this.registerForm.location);
             params.append('introduction',this.registerForm.introduction);
+            params.append('location',this.registerForm.location);
+            params.append('avator','/avatorImg/default.jpg');
 
-            setSinger(params)
+            setConsumer(params)
             .then(res =>{
                 if(res.code == 1)              {
 	    	        this.getData();	
@@ -234,11 +255,14 @@ export default {
             this.editVisible=true;
             this.editForm = {
                 id: row.id,
-                name:row.name,
+                username:row.username,
+                password:row.password,
                 gender:row.gender,
+                phoneNumber:row.phoneNumber,
+                email:row.email,
                 birth: row.birth,
-                location: row.location,
-                introduction: row.introduction
+                introduction:row.introduction,
+                location: row.location
             }
         },
 
@@ -247,13 +271,15 @@ export default {
             let d= new Date(this.editForm.birth);
             let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
             let params=new URLSearchParams();
-            params.append('id' , this.editForm.id);
-            params.append('name',this.editForm.name);
+             params.append('username',this.editForm.name);
+            params.append('password',this.editForm.password);
             params.append('gender',this.editForm.gender);
+            params.append('phoneNumber',this.editForm.phoneNumber);
+            params.append('email',this.editForm.email);
             params.append('birth',datetime);
-            params.append('location',this.editForm.location);
             params.append('introduction',this.editForm.introduction);
-            updateSinger(params)
+            params.append('location',this.editForm.location);
+            updateConsumer(params)
             .then(res =>{
                 if(res.code == 1)              {
 	    	        this.getData();	
@@ -269,12 +295,12 @@ export default {
         },
         //更新图片
         uploadUrl(id){
-            return `${this.$store.state.HOST}/singer/updateSingerPic?id=${id}`
+            return `${this.$store.state.HOST}/consumer/updateConsumerPic?id=${id}`
         },
 
         // 删除某个歌手
         deleteRow(){
-             deleteSinger(this.idx)
+             deleteConsumer(this.idx)
             .then(res =>{
                 if(res)              {
 	    	        this.getData();	
@@ -288,10 +314,6 @@ export default {
             })
             this.delVisible=false;
         },
-        songEdit(id,name)
-        {
-            this.$router.push({path:`/Song`,query:{id,name}});
-        }
     }
 }
 </script>
@@ -300,7 +322,7 @@ export default {
     .handle-box{
         margin-bottom: 20px;
     }
-    .singer-img{
+    .consumer-img{
         width:100%;
         height: 80px;
         /* 添加圆弧 */

@@ -6,6 +6,7 @@ import com.javaclimb.music.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,6 +65,7 @@ public class SongServiceImpl implements SongService {
         return songMapper.allSong();
     }
 
+
     /**
      * 根据歌名精确查询列表
      *
@@ -72,6 +74,16 @@ public class SongServiceImpl implements SongService {
     @Override
     public List<Song> songOfName(String name) {
         return songMapper.songOfName(name);
+    }
+
+    /**
+     * 根据状态精确查询列表
+     *
+     * @param status
+     */
+    @Override
+    public List<Song> songOfStatus(String status) {
+        return songMapper.songOfStatus(status);
     }
 
     /**

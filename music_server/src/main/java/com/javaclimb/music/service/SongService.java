@@ -34,10 +34,16 @@ public interface SongService {
     public List<Song> allSong();
 
 
+
     /**
      * 根据歌名精确查询列表
      */
     public List<Song> songOfName(String name);
+
+    /**
+     * 根据状态精确查询列表
+     */
+    public List<Song> songOfStatus(String status);
 
     /**
      * 根据歌手id查询

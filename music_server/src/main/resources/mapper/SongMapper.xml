@@ -130,6 +130,13 @@
         where name = #{name}
     </select>
 
+    <select id="songOfStatus" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+        select
+        <include refid="Blob_Column_List"/>
+        from song
+        where introduction = #{status}
+    </select>
+
     <select id="songOfSingerId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
         select
         <include refid="Blob_Column_List"/>

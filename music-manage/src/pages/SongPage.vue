@@ -56,9 +56,11 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="150" align="center">
+            <el-table-column label="操作" width="250" align="center">
                 <template slot-scope="scope">
                     <el-button size="mini" @click="handleEdit(scope.row)" class= "edit_button">编辑</el-button>
+                    <el-button size="mini" @click="changeStatus(scope.row.id)">同意</el-button>
+                     <el-button size="mini" @click="download(scope.row.url,scope.row.name)" class= "edit_button">下载</el-button>
                     <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)" class="delete_button">删除</el-button> 
                 </template>
             </el-table-column>
@@ -133,7 +135,8 @@
 import { mixin } from '../mixins/index';
 import {mapGetters} from 'vuex';
 import '@/assets/js/iconfont.js';
-import {songOfSingerId,updateSong,delSong} from '../api/index';
+import {songOfSingerId,updateSong,delSong,download,updateSongStatus} from '../api/index';
+
 
 export default {
     mixins: [mixin],
@@ -169,7 +172,8 @@ export default {
     },
     computed:{
         ...mapGetters([
-            'isPlay'
+            'isPlay',
+            'url'
         ]),
         //计算当前搜索结果表里的数据
         data(){
@@ -274,6 +278,25 @@ export default {
             });
             this.editVisible = false;
         },
+
+
+        changeStatus(id){
+            let params = new URLSearchParams();
+             params.append('id',id);
+             updateSongStatus(params)
+            .then(res => {
+                if(res.code == 1){
+                    this.getData();
+                    this.notify("审核成功","success");
+                }else{
+                    this.notify("审核失败","error");
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+            this.editVisible = false;
+        },
         //更新图片
         uploadUrl(id){
             return `${this.$store.state.HOST}/song/updateSongPic?id=${id}`
@@ -346,6 +369,29 @@ export default {
             }else{
                 this.$store.commit('setIsPlay',true);
             }
+        },
+
+        //下载音乐
+        download(url,name){
+            download(url)
+            .then(res=>{
+                let content =res.data;
+                let eleLink = document.createElement('a');
+                eleLink.download=name+`.mp3`;
+                eleLink.style.display='none';
+                //把字符内容转黄成blob地址
+                let blob = new Blob([content]);
+                eleLink.href = URL.createObjectURL(blob);
+                // 把链接地址加到docunment里
+                document.body.appendChild(eleLink);
+                //触发点击
+                eleLink.click();
+                //然后移除掉这个新加的空间
+                document.body.removeChild(eleLink);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
         }
     }   
 }

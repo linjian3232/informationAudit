@@ -3,6 +3,7 @@ package com.javaclimb.music.service.Impl;
 import com.javaclimb.music.dao.ConsumerMapper;
 import com.javaclimb.music.domain.Consumer;
 import com.javaclimb.music.service.ConsumerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
+    @Autowired
     private ConsumerMapper consumerMapper;
     /**
      * 增加

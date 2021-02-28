@@ -42,6 +42,11 @@ public interface SongMapper {
     public List<Song> songOfName(String name);
 
     /**
+     * 根据introduction精确查询列表
+     */
+    public List<Song> songOfStatus(String status);
+
+    /**
      * 根据歌手id查询
      * @param singerId
      * @returnId

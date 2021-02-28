@@ -97,11 +97,16 @@ public class SongController {
         return songService.songOfSingerId(Integer.parseInt(singerId));
     }
 
+    @RequestMapping(value="/allSong",method = RequestMethod.GET)
+    public Object allSongList(HttpServletRequest request){
+        return songService.allSong();
+    }
+
     /**
-     * 修改歌曲信息
+     * 修改歌曲
      */
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public Object updateSong(HttpServletRequest request){
+    public Object updateSongStatus(HttpServletRequest request){
         JSONObject jsonObject=new JSONObject();
         String id=request.getParameter("id").trim();
         String name=request.getParameter("name").trim();
@@ -125,6 +130,31 @@ public class SongController {
     }
 
     /**
+     * 修改歌曲状态
+     */
+    @RequestMapping(value = "/updateStatus",method = RequestMethod.POST)
+    public Object updateSong(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String id=request.getParameter("id").trim();
+        String introduction="第一层同意";
+        //保存到歌曲对象中
+        Song song=new Song();
+        song.setId(Integer.parseInt(id));
+        song.setIntroduction(introduction.trim());
+        boolean flag=songService.update(song);
+        if(flag){
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"审核成功");
+            return jsonObject;
+        }
+        jsonObject.put(Consts.CODE,0);
+        jsonObject.put(Consts.MSG,"审核失败");
+        return jsonObject;
+    }
+
+
+
+    /**
      * 删除歌曲信息
      */
     @RequestMapping(value= "/delete",method = RequestMethod.GET)
@@ -134,6 +164,8 @@ public class SongController {
         boolean flag=songService.delete(Integer.parseInt(id));
         return flag;
     }
+
+
 
     /**
      * 更新歌曲图片
@@ -247,5 +279,14 @@ public class SongController {
     public Object songOfSongName(HttpServletRequest request){
         String songName= request.getParameter("songName");
         return songService.songOfName(songName);
+    }
+
+    /**
+     * 根据歌曲状态查询
+     */
+    @RequestMapping(value="/songOfStatus" ,method = RequestMethod.GET)
+    public Object songOfStatus(HttpServletRequest request){
+        String status= request.getParameter("status");
+        return songService.songOfStatus(status);
     }
 }

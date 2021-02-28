@@ -1,5 +1,4 @@
 package com.javaclimb.music.controller;
-
 import com.alibaba.fastjson.JSONObject;
 import com.javaclimb.music.domain.Consumer;
 import com.javaclimb.music.service.ConsumerService;
@@ -43,7 +42,7 @@ public class ConsumerController {
         String introduction=request.getParameter("introduction").trim();
         String location=request.getParameter("location").trim();
         String avator=request.getParameter("avator").trim();
-        DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+        
 
         if(username==null||username.equals("")){
             jsonObject.put(Consts.CODE,0);
@@ -55,7 +54,10 @@ public class ConsumerController {
             jsonObject.put(Consts.MSG,"密码不能为空");
             return jsonObject;
         }
-        Date birthDate= new Date();
+
+        //把生日转换成Date格式
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date birthDate = new Date();
         try {
             birthDate = dateFormat.parse(birth);
         }
@@ -70,8 +72,9 @@ public class ConsumerController {
         consumer.setPhoneNumber(phoneNumber);
         consumer.setEmail(email);
         consumer.setBirth(birthDate);
+		consumer.setIntroduction(introduction);
         consumer.setLocation(location);
-        consumer.setIntroduction(introduction);
+        
         consumer.setAvator(avator);
         boolean flag=consumerService.insert(consumer);
         if(flag){
@@ -98,8 +101,8 @@ public class ConsumerController {
         String birth=request.getParameter("birth").trim();
         String introduction=request.getParameter("introduction").trim();
         String location=request.getParameter("location").trim();
-        String avator=request.getParameter("avator").trim();
-        DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+
+       
 
         if(username==null||username.equals("")){
             jsonObject.put(Consts.CODE,0);
@@ -111,6 +114,7 @@ public class ConsumerController {
             jsonObject.put(Consts.MSG,"密码不能为空");
             return jsonObject;
         }
+		 DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         Date birthDate= new Date();
         try {
             birthDate = dateFormat.parse(birth);
@@ -187,7 +191,7 @@ public class ConsumerController {
 //        currentTimeMillis是一个当前时间精确到毫秒的长字符串，这样做的目的是避免同时上传两个文件的时候其中一个被覆盖掉
 
         String fileName = System.currentTimeMillis()+avatorFile.getOriginalFilename();
-        String filePath =System.getProperty("user.dir")+System.getProperty("file.separator")+"avatorImg"+System.getProperty("file.separator");
+        String filePath =System.getProperty("user.dir")+System.getProperty("file.separator")+"avatorImg";
         File file1 = new File(filePath);
 //        如果文件路劲不存在，创建新的路劲
         if(!file1.exists()){
