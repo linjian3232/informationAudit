@@ -223,7 +223,7 @@ export default {
             let _this = this;
             var form = new FormData(document.getElementById('tf'));
             form.append('singerId',this.singerId);
-            form.set('name',this.singerName+'-'+form.get('name'));
+            form.append('singerName',this.singerName);
             if(!form.get('lyric')){
                 form.set('lyric','[00:00:00]暂无歌词');
             }

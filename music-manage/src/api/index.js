@@ -33,7 +33,7 @@ export const songOfSongId= (id) =>get(`song/detail?songId=${id}`);
 //根据歌曲名字查询歌曲对象
 export const songOfSongName= (songName) =>get(`song/songOfSongName?songName=${songName}`);
 
-export const songOfStatus= (status) =>get(`song/songOfStatus?status=${status}`);
+export const songOfStatus= (status,singerId) =>get(`song/songOfStatus?status=${status}&&singerId=${singerId}`);
 
 //更新歌曲状态
 export const updateSongStatus= (params) =>post(`song/updateStatus`,params);

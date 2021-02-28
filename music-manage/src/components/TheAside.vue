@@ -45,6 +45,11 @@ export default {
                     index: 'Singer',
                     title: '歌手管理'
                 },
+                {
+                    icon: 'el-icon-document',
+                    index: 'Reviewer',
+                    title: '审核者管理'
+                },
                  {
                     icon: 'el-icon-document',
                     index: 'SongList',

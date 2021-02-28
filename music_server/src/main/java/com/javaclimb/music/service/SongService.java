@@ -43,7 +43,7 @@ public interface SongService {
     /**
      * 根据状态精确查询列表
      */
-    public List<Song> songOfStatus(String status);
+    public List<Song> songOfStatus(String status,Integer singerId);
 
     /**
      * 根据歌手id查询

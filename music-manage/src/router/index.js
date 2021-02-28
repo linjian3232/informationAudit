@@ -26,8 +26,16 @@ export default new Router({
           component: resolve => require(['../pages/SingerPage.vue'], resolve)
         },
         {
-          path: '/SongList',
-          component: resolve => require(['../pages/SongListPage.vue'], resolve)
+          path: '/Unreview',
+          component: resolve => require(['../pages/UnreviewPage.vue'], resolve)
+        },
+        {
+          path: '/review',
+          component: resolve => require(['../pages/ReviewPage.vue'], resolve)
+        },
+        {
+          path: '/Reviewer',
+          component: resolve => require(['../pages/Reviewer.vue'], resolve)
         },
         {
           path: '/Song',

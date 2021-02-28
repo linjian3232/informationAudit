@@ -82,8 +82,17 @@ public class SongServiceImpl implements SongService {
      * @param status
      */
     @Override
-    public List<Song> songOfStatus(String status) {
-        return songMapper.songOfStatus(status);
+    public List<Song> songOfStatus(String status,Integer singerId) {
+        List<Song> songList=songMapper.songOfStatus(status);
+        List<Song> songList0fName=new ArrayList<>();
+        for(Song song:songList)
+        {
+            if(song.getSingerId().equals(singerId)){
+                songList0fName.add(song);
+            }
+        }
+        return songList0fName;
+
     }
 
     /**

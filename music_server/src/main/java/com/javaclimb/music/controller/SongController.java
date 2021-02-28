@@ -38,7 +38,8 @@ public class SongController {
         JSONObject jsonObject = new JSONObject();
 //        获取前端传来的参数
         String singerId=request.getParameter("singerId").trim();
-        String name=request.getParameter("name").trim();
+        String singerName=request.getParameter("singerName").trim();
+        String name = singerName+'_'+mpFile.getOriginalFilename();
         String introduction=request.getParameter("introduction").trim();    //简介
         String pic="/img/songPic/songDefault.jpg";                      //歌曲默认图片
         String lyric = request.getParameter("lyric").trim();                //歌词
@@ -65,7 +66,7 @@ public class SongController {
             mpFile.transferTo(dest);
             Song song = new Song();
             song.setSingerId(Integer.parseInt(singerId));
-            song.setName(name);
+            song.setName(name.trim());
             song.setIntroduction(introduction);
             song.setPic(pic);
             song.setLyric(lyric);
@@ -282,11 +283,12 @@ public class SongController {
     }
 
     /**
-     * 根据歌曲状态查询
-     */
-    @RequestMapping(value="/songOfStatus" ,method = RequestMethod.GET)
-    public Object songOfStatus(HttpServletRequest request){
-        String status= request.getParameter("status");
-        return songService.songOfStatus(status);
+         * 根据歌曲状态查询
+         */
+        @RequestMapping(value="/songOfStatus" ,method = RequestMethod.GET)
+        public Object songOfStatus(HttpServletRequest request){
+            String status= request.getParameter("status");
+            String singerId= request.getParameter("singerId");
+            return songService.songOfStatus(status,Integer.parseInt(singerId));
     }
 }
