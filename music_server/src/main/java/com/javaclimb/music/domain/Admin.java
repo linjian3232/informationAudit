@@ -10,7 +10,16 @@ public class Admin implements Serializable {
     private String name;
 //    密码
     private String password;
+    //    级别
+    private Integer privilegeLevel;
 
+    public Integer getPrivilegeLevel() {
+        return privilegeLevel;
+    }
+
+    public void setPrivilegeLevel(Integer privilegeLevel) {
+        this.privilegeLevel = privilegeLevel;
+    }
     public Integer getId() {
         return id;
     }

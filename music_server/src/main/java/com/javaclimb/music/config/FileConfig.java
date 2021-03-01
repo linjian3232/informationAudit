@@ -16,9 +16,9 @@ public class FileConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         //歌手头像地址
-        registry.addResourceHandler("/img/singerPic/**").addResourceLocations(
+        registry.addResourceHandler("/img/uploaderPic/**").addResourceLocations(
                 "file:"+System.getProperty("user.dir")+System.getProperty("file.separator")+"img"
-                +System.getProperty("file.separator")+"singerPic"+System.getProperty("file.separator")
+                +System.getProperty("file.separator")+"uploaderPic"+System.getProperty("file.separator")
         );
         //歌单图片地址
         registry.addResourceHandler("/img/songListPic/**").addResourceLocations(

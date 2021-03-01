@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaclimb.music.dao.UploaderMapper">
+    <resultMap id="BaseResultMap" type="com.javaclimb.music.domain.Uploader" >
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="gender" jdbcType="TINYINT" property="gender"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="study_number" jdbcType="VARCHAR" property="studyNumber"/>
+        <result column="academy" jdbcType="VARCHAR" property="academy"/>
+        <result column="major" jdbcType="VARCHAR" property="major"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,gender,pic,study_number,academy,major
+    </sql>
+
+    <insert id="insert" parameterType="com.javaclimb.music.domain.Uploader">
+        insert into uploader
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="pic != null">
+                pic,
+            </if>
+            <if test="studyNumber != null">
+                study_number,
+            </if>
+            <if test="academy != null">
+                academy,
+            </if>
+            <if test="major != null">
+                major,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="gender != null">
+                #{gender},
+            </if>
+            <if test="pic != null">
+                #{pic},
+            </if>
+            <if test="studyNumber != null">
+                #{studyNumber},
+            </if>
+            <if test="academy != null">
+                #{academy},
+            </if>
+            <if test="major != null">
+                #{major},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.javaclimb.music.domain.Uploader">
+        update uploader
+        <set>
+            <if test="name != null">
+               name = #{name},
+            </if>
+            <if test="gender != null">
+              gender = #{gender},
+            </if>
+            <if test="pic != null">
+               pic = #{pic},
+            </if>
+            <if test="studyNumber != null">
+               study_number = #{studyNumber},
+            </if>
+            <if test="academy != null">
+               academy = #{academy},
+            </if>
+            <if test="major != null">
+                major = #{major},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from uploader
+        where id=#{id}
+    </delete>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from uploader
+        where id = #{id}
+    </select>
+
+    <select id="allUploader" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from uploader
+    </select>
+
+    <select id="uploaderOfName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from uploader
+        where name like #{name}
+    </select>
+
+    <select id="uploaderOfGender" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from uploader
+        where gender = #{gender}
+    </select>
+
+</mapper>

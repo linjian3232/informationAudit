@@ -7,16 +7,16 @@ export const getLoginStatus = (params) => post(`admin/login/status`,params);
 //=====================歌手相关=======================
 
 //查询歌手
-export const getAllSinger = () => get(`singer/allSinger`);
+export const getAllUploader = () => get(`uploader/allUploader`);
 
 //添加歌手
-export const setSinger= (params) => post(`singer/add`,params);
+export const setUploader= (params) => post(`uploader/add`,params);
 
 //修改歌手信息
-export const updateSinger = (params) => post(`singer/update`,params);
+export const updateUploader = (params) => post(`uploader/update`,params);
 
 //删除歌手
-export const deleteSinger = (id) => get(`singer/delete?id=${id}`);
+export const deleteUploader = (id) => get(`uploader/delete?id=${id}`);
 
 //=====================歌曲相关=======================
 export const getAllSong = () =>get(`song/allSong`);

@@ -7,10 +7,11 @@
         <id column="id" javaType="INTEGER" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="privilege_level" jdbcType="INTEGER" property="privilege_level"/>
     </resultMap>
 
     <select id="verifyPassword" resultType="java.lang.Integer">
 -- #后边跟着的数字是传入参数的序号
-        select count(*) from admin where name=#{username} and password=#{password}
+        select privilege_level from admin where name=#{username} and password=#{password}
     </select>
 </mapper>

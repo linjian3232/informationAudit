@@ -42,8 +42,8 @@ export default {
                 },
                  {
                     icon: 'el-icon-document',
-                    index: 'Singer',
-                    title: '歌手管理'
+                    index: 'Uploader',
+                    title: '上传者管理'
                 },
                 {
                     icon: 'el-icon-document',
