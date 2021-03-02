@@ -1,0 +1,168 @@
+#include<cstdio>
+#include<malloc.h>
+#include<iostream>
+using namespace std;
+#define MAX 20
+#define NULL 0
+typedef int Status;
+typedef struct BiTNode
+{
+	char letter='0';
+    struct BiTNode*Lchild;
+    struct BiTNode*Rchild;
+}Bitnode, *Bitree;
+void BitreeInit(Bitnode**proot)
+{
+	if (proot == NULL)
+		return;
+	*proot = NULL;
+	return;
+}
+Status CreateBiTree(Bitree *T)
+{
+	char ch;
+	cin >> ch;
+	if (ch == '#')(*T) = NULL;//#代表空指针
+	else
+	{
+		(*T) = (Bitree)malloc(sizeof(Bitnode));
+		(*T)->letter= ch;
+		CreateBiTree(&(*T)->Lchild);
+		CreateBiTree(&(*T)->Rchild);
+	}
+	return 1;
+}
+void DestroyTreeNode(Bitnode*node)
+{
+	free (node);
+	return;
+}
+void destroyBitree(Bitree &T)
+{
+	if (T)
+	{
+		destroyBitree(T->Lchild);
+		destroyBitree(T->Rchild);
+		delete T;
+		T = NULL;
+	}
+}
+void TreePreOrder(Bitnode*root)
+{
+	if (root == NULL)return;
+	printf("%2c", root->letter);
+	TreePreOrder(root->Lchild);
+	TreePreOrder(root->Rchild);
+	return;
+}//先序遍历，先访问根节点，再访问左子树，直到无返回上一个节点访问右子树，同样以先左后右继续开始
+void TreeInOrder(Bitnode*root)
+{
+	if (root == NULL)
+		return;
+	TreeInOrder(root->Lchild);
+    printf("%2c", root->letter);
+	TreeInOrder(root->Rchild);
+	return;
+}//中序遍历，先访问左子树（一路访问直到没有左子树）再访问根节点，最后访问右子树
+void TreePostOrder(Bitnode*root)
+{
+	if (root == NULL)return;
+	TreePostOrder(root->Lchild);
+	TreePostOrder(root->Rchild);
+	printf("%2c", root->letter);
+	return;
+}//后序遍历，先访问左子树，再访问右子树，最后访问根节点
+void LevelOrder(Bitree T)
+{
+	Bitree Queue[MAX], b;
+	int front, rear; front = rear = 0;
+	if (T)//若二叉树非空
+	{
+		Queue[rear++] = T;//植入根节点进入队列
+		while(front!=rear)//当队列非空
+		{ 
+			b = Queue[front++];//队首元素出列，并且访问这个节点
+			printf("%2c", b->letter);
+			if (b->Lchild != NULL)
+			{
+				Queue[rear++] = b->Lchild;//此时若有左子树则其位于队首
+			}
+			if (b->Rchild != NULL)
+			{
+				Queue[rear++] = b->Rchild;//位于左子树后边
+			}
+		}
+	}
+}//由左到右，当左子树出队列后植入其左右子树，接着再让位于队首的右子树出队列，依次循环
+int depth(Bitree T)
+{
+	int dep1, dep2;
+	if (T == NULL)return 0;
+	else
+	{
+		dep1 = depth(T->Lchild);//求出左子树的深度
+		dep2 = depth(T->Rchild);//求出右子树的深度
+		return dep1 > dep2 ? dep1 + 1 : dep2 + 1;//比较二者的深度并且加1（根节点）
+	}
+}
+int main()
+{
+	cout << "输入1：查看先序序列" << endl;
+	cout << "输入2：查看中序序列" << endl;
+	cout << "输入3：查看后序序列" << endl;
+	cout << "输入4：查看层序序列" << endl;
+	cout << "输入5：查看二叉树的深度" << endl;
+	cout << "输入6：销毁二叉树" << endl;
+	cout << "输入7：构建新的二叉树" << endl;
+N:   Bitree T = NULL; int i, n;
+	printf("先建立一颗二叉树："); printf("\n");
+	              CreateBiTree(&T);
+				  
+				  cin >> i;
+				  while (1)
+				  {
+					  if (i == 1)
+					  {
+						  printf("\n先序序列为：\n");
+						  TreePreOrder(T);
+						  cout << endl;
+					  }
+					  if (i == 2)
+					  {
+						  printf("\n中序序列为：\n");
+						  TreeInOrder(T);
+						  cout << endl;
+					  }
+					  if (i == 3)
+					  {
+						  printf("\n后序序列为：\n");
+						  TreePostOrder(T);
+						  cout << endl;
+					  }
+					  if (i == 4)
+					  {
+						  printf("\n层序序列为：\n");
+						  LevelOrder(T);
+						  cout << endl;
+					  }
+					  if (i == 5)
+					  {
+						  printf("\n该二叉树深度为：%d", depth(T));
+						  cout << endl;
+					  }
+					  
+					  if (i == 6)
+					  {
+						  destroyBitree(T);
+						  cout << "销毁成功！" << endl;
+					  }
+					  if (i == 7)goto N;
+					  cin >> i;
+				  }
+				  
+	
+return 0;
+}//ABD#EG###C#F##
+
+
+

@@ -1,0 +1,3489 @@
+swagger: "2.0"
+info:
+  description: |-
+   - 充分利用LED电子显示屏作为信息发布和宣传窗口作用，加强校园文化建设，同时进一步完善信息发布形式和内容的管理工作，保障信息发布的规范化和制度化。
+   - 通用错误处理
+   所有在路径上的id不存在，返回状态码404，errno = 0， errmsg 自定义
+   所有参数的错误返回状态码400，errno = 0， errmsg 自定义
+  version: 1.0.16
+  title: "公共教学楼信息发布系统后端API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "mingqiu@xmu.edu.cn"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+# host: "172.16.0.183"
+# basePath: "/v1"
+tags:
+- name: "submitter"
+  description: "提交者服务"
+- name: "inspector"
+  description: "审核者服务"
+
+# schemes:
+# - "http"
+
+paths:
+  #提交者模块
+  /submitters/login:
+    post:
+      tags:
+      - "submitter"
+      summary: "用户名密码登录"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "用户名和密码"
+        required: true
+        schema:
+          properties:
+            userName:
+              type: "string"
+            password:
+              type: "string"
+      responses:
+        "default":
+          description: "成功登录,返回用户的token"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                type: "string"
+                example: "{token}"
+        "702":
+          description: "用户被禁止登录"
+        "700":
+          description: "用户名不存在或者密码错误"
+
+  /submitters/logout:
+    get:
+      tags:
+      - "submitter"
+      summary: "用户登出"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"  
+  /submitters/submitFile:
+    post:
+      tags:
+      - "submitter"
+      summary: "用户上传新文件"    
+      description: ""
+      operationId: "uploadFile"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "可填写的广告信息"
+        required: true
+        schema:
+          properties:
+            content:
+              type: "string"
+              description: "发布该文件理由简述"
+            beginDate:
+              type: "string"
+              description: "发布开始日期"
+            endDate:
+              type: "string"
+              description: "发布结束日期"
+            beginTime:
+              type: "string"
+              description: "单日开始时间"
+            endTime:
+              type: "string"
+              description: "单日结束时间"
+           
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/FileInfo"
+        "603":
+          description: "达到时段发布信息上限(8个)"
+  /submitters/file/{id}:
+    get:
+      tags:
+      - "submitter"
+      summary: "用户查看某个文件上传信息"
+      description: ""
+      operationId: "getFileInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "文件id"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/FileInfo"
+    put:
+      tags:
+      - "submitter"
+      summary: "提交者修改已上传文件信息"    
+      description: ""
+      operationId: "changeFileInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "文件id"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "可修改的文件信息"
+        required: true
+        schema:
+          properties:
+            content:
+              type: "string"
+              description: "发布该文件理由简述"
+            beginDate:
+              type: "string"
+              description: "发布开始日期"
+            endDate:
+              type: "string"
+              description: "发布结束日期"
+            beginTime:
+              type: "string"
+              description: "单日开始时间"
+            endTime:
+              type: "string"
+              description: "单日结束时间"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+    delete:
+      tags:
+      - "submitter"
+      summary: "提交者取消一个已上传文件的发布"    
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "文件id"
+        type: "string"
+        required: true
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "608":
+          description: "上传文件中无此文件"  
+  #用户模块
+  /users/states:
+    get:
+      tags:
+      - "user"
+      summary: "获得买家的所有状态"
+      description: ""
+      operationId: "getUserState"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/State"
+  
+  /users:
+    post:
+      tags:
+      - "user"
+      summary: "注册用户"    
+      description: "无需登录"
+      operationId: "registerUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "可填写的用户信息"
+        required: true
+        schema:
+          properties:
+            mobile:
+              type: "string"
+            email:
+              type: "string"
+            userName:
+              type: "string"
+            password:
+              type: "string"
+            realName:
+              type: "string"
+            gender:
+              type: "integer"
+            birthday:
+              type: "string"
+              format: "YYYY-MM-DD"
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/User"
+        "733":
+          description: "电话已被注册"
+        "732":
+          description: "邮箱已被注册"
+        "731":
+          description: "用户名已被注册"
+    get:
+      tags:
+      - "user"
+      summary: "买家查看自己信息"
+      description: ""
+      operationId: "getSelfInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/User"
+    put:
+      tags:
+      - "user"
+      summary: "买家修改自己的信息"
+      description: ""
+      operationId: "changeMyselfInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        type: "string"
+        in: "header"
+        description: "用户token"
+        required: true
+      - name: "body"
+        in: "body"
+        description: "可修改的用户信息"
+        required: true
+        schema:
+          properties:
+            realName:
+              type: "string"
+            gender:
+              type: "string"
+            birthday:
+              type: "string"
+              format: "YYYY-MM-DD"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+  /users/password:
+    put:
+      tags:
+      - "user"
+      summary: "用户修改密码"
+      description: |-
+        - 密码长度为6，且至少包含大写字母，小写字母，数字和特殊符号
+        - 验证码只能使用一次，验证码有效期5分钟
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "验证码和新密码"
+        required: true
+        schema:
+          properties:
+            captcha:
+              type: "string"
+              description: "验证码"
+            newPassword:
+              type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "741":
+          description: "不能与旧密码相同"
+
+  /users/password/reset:
+    put:
+      tags:
+      - "user"
+      summary: "用户重置密码"
+      description: "向用户邮箱发送验证码，限制用户在一段时间内只能发送一次验证码"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "邮箱和用户名"
+        required: true
+        schema:
+          properties:
+            userName:
+              type: "string"
+            email:
+              type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "745":
+          description: "与系统预留的邮箱不一致"
+
+  /users/all:          
+    get:
+      tags:
+      - "user"
+      summary: "平台管理员获取所有用户列表"    
+      description: ""
+      operationId: "getAllUsers"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "userName"
+        in: "query"
+        description: "用户名"
+        type: "string"
+        required: false
+      - name: "email"
+        in: "query"
+        description: "邮箱"
+        type: "string"
+        required: false
+      - name: "mobile"
+        in: "query"
+        description: "电话号码"
+        type: "string"
+        required: false
+      - name: "page"
+        in: "query"
+        description: "页码"
+        type: "integer"
+        required: false
+      - name: "pageSize"
+        in: "query"
+        description: "每页数目"
+        type: "integer"
+        required: false
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                type: "object"
+                properties:
+                  page:
+                    type: "integer"                  
+                    description: "页码"
+                  pageSize:
+                    description: "每页数目"
+                    type: "integer"
+                  total:
+                    description: "总数"
+                    type: "integer"
+                  pages:
+                    description: "总页数"
+                    type: "integer"
+                  list:  
+                    type: "array"
+                    items:
+                      $ref: "#/definitions/SimpleUser"
+
+
+  /users/login:
+    post:
+      tags:
+      - "user"
+      summary: "用户名密码登录"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "用户名和密码"
+        required: true
+        schema:
+          properties:
+            userName:
+              type: "string"
+            password:
+              type: "string"
+      responses:
+        "default":
+          description: "成功登录,返回用户的token"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                type: "string"
+                example: "{token}"
+        "702":
+          description: "用户被禁止登录"
+        "700":
+          description: "用户名不存在或者密码错误"
+
+  /users/logout:
+    get:
+      tags:
+      - "user"
+      summary: "用户登出"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+  /users/{id}:
+    get:
+      tags:
+      - "user"
+      summary: "管理员查看任意买家信息"
+      description: ""
+      operationId: "getUserById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        in: "header"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "用户id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                $ref: "#/definitions/User"       
+
+  /users/{id}/ban:
+    put:
+      tags:
+      - "user"
+      summary: "平台管理员封禁买家"
+      description: ""
+      operationId: "banUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        type: "string"
+        in: "header"
+        description: "用户token"
+        required: true
+      - name: "id"
+        in: "path"
+        description: "用户id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+  /users/{id}/release:
+    put:
+      tags:
+      - "user"
+      summary: "平台管理员解禁买家"
+      description: ""
+      operationId: "releaseUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        type: "string"
+        in: "header"
+        description: "用户token"
+        required: true
+      - name: "id"
+        in: "path"
+        description: "用户id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+  #购物车  
+  /carts:
+    get:
+      tags:
+      - "cart"
+      summary: "买家获得购物车列表"
+      description: ""
+      operationId: "queryCarts"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "页码"
+        type: "integer"
+        required: false
+      - name: "pageSize"
+        in: "query"
+        description: "每页数目"
+        type: "integer"
+        required: false
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                type: "object"
+                properties:
+                  page:
+                    type: "integer"                  
+                    description: "页码"
+                  pageSize:
+                    description: "每页数目"
+                    type: "integer"
+                  total:
+                    description: "总数"
+                    type: "integer"
+                  pages:
+                    description: "总页数"
+                    type: "integer"
+                  list:  
+                    type: "array"
+                    items:
+                      properties:
+                        id:
+                          type: "integer"
+                        goodSkuId:
+                          type: "integer"
+                        skuName:
+                          type: "string"
+                          description: "规格名称"
+                        quantity:
+                          type: "integer"
+                        price:
+                          type: "integer"
+                          description: "商品被加入购物车时的价格"
+                        gmtCreate:
+                          type: "string"
+                          format: "datetime"
+                          description: "创建时间"
+                        gmtModified:
+                          type: "string"
+                          format: "datetime"
+                          description: "修改时间"                          
+                        couponActivity:
+                          type: "array"
+                          description: "适用的优惠活动"
+                          items:
+                            properties:
+                              id:
+                                type: "integer"
+                              name:
+                                type: "string"
+                              beginTime:
+                                type: "string"
+                              endTime:
+                                type: "string"
+    
+    post:
+      tags:
+      - "cart"
+      summary: "买家将商品加入购物车"    
+      description: ""
+      operationId: "addToCart"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "可填写的信息"
+        required: true
+        schema:
+          properties:
+            goodSkuID:
+              type: "integer"
+            quantity:
+              type: "integer"
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/Cart"
+    delete:
+      tags:
+      - "cart"
+      summary: "买家清空购物车"
+      description: ""
+      operationId: "clearGoods"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        type: "string"
+        in: "header"
+        description: "用户token"
+        required: true
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+  /carts/{id}:
+    put:
+      tags:
+      - "cart"
+      summary: "买家修改购物车单个商品的数量或规格"
+      description: ""
+      operationId: "changeCartInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        type: "string"
+        in: "header"
+        description: "用户token"
+        required: true
+      - name: "id"
+        in: "path"
+        description: "购物车ID"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "修改购物车单个商品信息"
+        required: true
+        schema:
+          properties:
+            goodSkuID:
+              type: "integer"
+            quantity:
+              type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+    delete:
+      tags:
+      - "cart"
+      summary: "买家删除购物车中商品"
+      description: "删除任意商品"
+      operationId: "delGoods"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        type: "string"
+        in: "header"
+        description: "用户token"
+        required: true
+      - name: "id"
+        in: "path"
+        description: "购物车ID"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+  #足迹
+  /shops/{did}/footprints:
+    get:
+      tags:
+      - "footprint"
+      summary: "管理员查看浏览记录"    
+      description: ""
+      operationId: "getSelfFootPrint"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "userId"
+        in: "query"
+        description: "用户id"
+        type: "integer"
+        required: false
+      - name: "beginTime"
+        in: "query"
+        description: "开始时间"
+        type: "string"
+      - name: "endTime"
+        in: "query"
+        description: "结束时间"
+        type: "string"        
+      - name: "page"
+        in: "query"
+        description: "页码"
+        type: "integer"
+        required: false
+      - name: "pageSize"
+        in: "query"
+        description: "每页数目"
+        type: "integer"
+        required: false
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                type: "object"
+                properties:
+                  page:
+                    type: "integer"                  
+                    description: "页码"
+                  pageSize:
+                    description: "每页数目"
+                    type: "integer"
+                  total:
+                    description: "总数"
+                    type: "integer"
+                  pages:
+                    description: "总页数"
+                    type: "integer"
+                  list:  
+                    type: "array"
+                    items:
+                      $ref: "#/definitions/FootPrint"
+
+  /skus/{id}/footprints:
+    post:
+      tags:
+      - "footprint"
+      summary: "增加足迹"    
+      description: "平台内部调用"
+      operationId: "addFootPrint"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "sku id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+  #时段
+  /shops/{did}/advertisement/timesegments:
+    post:
+      tags:
+      - "time"
+      summary: "平台管理员新增广告时间段"    
+      description: ""
+      operationId: "generateNewAdvertisementTime"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "body"
+        in: "body"
+        description: "起止时间"
+        required: true
+        schema:
+          properties:
+            beginTime: 
+              type: "string"
+              description: "只有小时以后的值有意义"
+            endTime: 
+              type: "string"
+              description: "只有小时以后的值有意义"
+            
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/TimeSegment"
+        "604":
+          description: "时段冲突"
+    get:
+      tags:
+      - "time"
+      summary: "管理员获取广告时间段列表"    
+      description: ""
+      operationId: "getAllAdvertisementTime"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "page"
+        in: "query"
+        description: "页码"
+        type: "integer"
+        required: false
+      - name: "pageSize"
+        in: "query"
+        description: "每页数目"
+        type: "integer"
+        required: false
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                type: "object"
+                properties:
+                  page:
+                    type: "integer"                  
+                    description: "页码"
+                  pageSize:
+                    description: "每页数目"
+                    type: "integer"
+                  total:
+                    description: "总数"
+                    type: "integer"
+                  pages:
+                    description: "总页数"
+                    type: "integer"
+                  list:                              
+                    type: "array"
+                    items:
+                      $ref: "#/definitions/TimeSegment"
+          
+  /shops/{did}/flashsale/timesegments:
+    post:
+      tags:
+      - "time"
+      summary: "平台管理员新增秒杀时间段"    
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "body"
+        in: "body"
+        description: "起止时间"
+        required: true
+        schema:
+          properties:
+            beginTime: 
+              type: "string"
+              description: "只有小时以后的值有意义"
+            endTime: 
+              type: "string"
+              description: "只有小时以后的值有意义"
+
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/TimeSegment"
+        "604":
+          description: "时段冲突"
+    get:
+      tags:
+      - "time"
+      summary: "管理员获取秒杀时间段列表"    
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "page"
+        in: "query"
+        description: "页码"
+        type: "integer"
+        required: false
+      - name: "pageSize"
+        in: "query"
+        description: "每页数目"
+        type: "integer"
+        required: false
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                type: "object"
+                properties:
+                  page:
+                    type: "integer"                  
+                    description: "页码"
+                  pageSize:
+                    description: "每页数目"
+                    type: "integer"
+                  total:
+                    description: "总数"
+                    type: "integer"
+                  pages:
+                    description: "总页数"
+                    type: "integer"
+                  list:                              
+                    type: "array"
+                    items:
+                      $ref: "#/definitions/TimeSegment"
+          
+  /shops/{did}/advertisement/timesegments/{id}:
+    delete:
+      tags:
+        - "time"
+      summary: "平台管理员删除广告时间段"    
+      description: "该时段下相应的广告的segid=0"
+      produces:
+        - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "时段id"
+        required: true
+        type: "integer"  
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"  
+
+  /shops/{did}/flashsale/timesegments/{id}:
+    delete:
+      tags:
+        - "time"
+      summary: "平台管理员删除秒杀时间段"    
+      description: "该时段下相应的秒杀的segid=0"
+      produces:
+        - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "时段id"
+        required: true
+        type: "integer"  
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"  
+
+  #广告
+  /advertisement/states:
+    get:
+      tags:
+      - "advertise"
+      summary: "获得广告的所有状态"
+      description: ""
+      operationId: "getadvertisementstate"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+              errmsg: 
+                type: "string"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/State"
+  
+  /shops/{did}/advertisement/{id}/default:
+    put:
+      tags:
+      - "advertise"
+      summary: "管理员设置默认广告"    
+      description: "将一个广告设置为默认广告"
+      operationId: "setDefaultAdvertisement"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"      
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+
+  /shops/{did}/advertisement/{id}:
+    put:
+      tags:
+      - "advertise"
+      summary: "管理员修改广告内容"    
+      description: ""
+      operationId: "changeAdvertisementInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "可修改的广告信息"
+        required: true
+        schema:
+          properties:
+            content:
+              type: "string"
+            beginDate:
+              type: "string"
+            endDate:
+              type: "string"              
+            weight:
+              type: "string"
+            repeat:
+              type: "boolean"
+            link:
+              type: "string"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+    delete:
+      tags:
+      - "advertise"
+      summary: "管理员删除某一个广告"    
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        type: "string"
+        required: true
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "608":
+          description: "广告状态禁止"
+            
+
+  /advertisement/current:
+    get:
+      tags:
+      - "advertise"
+      summary: "获取当前时段广告列表"    
+      description: "无需登录"
+      operationId: "getCurrentAdvertisement"
+      produces:
+      - "application/json"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Advertisement"
+
+  /shops/{did}/advertisement/{id}/uploadImg:
+    post:
+      tags:
+      - "advertise"
+      summary: "管理员上传广告图片"    
+      description: "如果该广告有图片，需修改该广告的图片，并删除图片文件"
+      operationId: "uploadAdvImg"
+      consumes: 
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        required: true
+        type: "integer"
+      - in: "formData"
+        name: "img"
+        type: "file"
+        description: "文件"
+        required: true
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "506":
+          description: "目录文件夹眉头写入权限"
+      
+    
+  /shops/{did}/advertisement/{id}/onshelves:
+    put:
+      tags:
+      - "advertise"
+      summary: "管理员上架广告"    
+      description: ""
+      operationId: "onShelvesAdvertisement"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "608":
+          description: "广告状态禁止"
+
+  /shops/{did}/advertisement/{id}/offshelves:
+    put:
+      tags:
+      - "advertise"
+      summary: "管理员下架广告"    
+      description: ""
+      operationId: "offShelvesAdvertisement"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        required: true
+        type: "integer"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "608":
+          description: "广告状态禁止"
+  
+  /shops/{did}/advertisement/{id}/audit:
+    put:
+      tags:
+      - "advertise"
+      summary: "管理员审核广告"    
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        required: true
+        type: "integer"
+      - name: "body"
+        in: "body"
+        description: "可填写的广告信息"
+        required: true
+        schema:
+          properties:
+            conclusion:
+              type: "boolean"
+              description: "审核结果"
+            message:
+              type: "string"
+              description: "审核结果"
+      responses:
+        "default":
+          description: "成功"
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+        "608":
+          description: "广告状态禁止"        
+
+  /shops/{did}/timesegments/{id}/advertisement:
+    get:
+      tags:
+      - "advertise"
+      summary: "管理员查看某一个广告时间段的广告"    
+      description: "查询时可以选择按照时间段来查看,当id=0时为未定义时段的广告"
+      operationId: "getOneAdvertisementTime"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告时间段id"
+        type: "string"
+        required: true
+      - name: "beginDate"
+        description: "广告开始日期"
+        type: "string"
+        in: "query"
+      - name: "endDate"
+        description: "广告结束日期"
+        type: "string"
+        in: "query"
+      - name: "page"
+        in: "query"
+        description: "页码"
+        type: "integer"
+        required: false
+      - name: "pageSize"
+        in: "query"
+        description: "每页数目"
+        type: "integer"
+        required: false
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                type: "object"
+                properties:
+                  page:
+                    type: "integer"                  
+                    description: "页码"
+                  pageSize:
+                    description: "每页数目"
+                    type: "integer"
+                  total:
+                    description: "总数"
+                    type: "integer"
+                  pages:
+                    description: "总页数"
+                    type: "integer"
+                  list:  
+                    type: "array"
+                    items:
+                      $ref: "#/definitions/Advertisement"
+    post:
+      tags:
+      - "advertise"
+      summary: "管理员在广告时段下新建广告"    
+      description: ""
+      operationId: "createAdvertisement"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "id"
+        in: "path"
+        description: "广告时间段id"
+        type: "integer"
+        required: true
+      - name: "body"
+        in: "body"
+        description: "可填写的广告信息"
+        required: true
+        schema:
+          properties:
+            content:
+              type: "string"
+            weight:
+              type: "string"
+              description: "排序权重"
+            beginDate:
+              type: "string"
+              description: "开始日期"
+            endDate:
+              type: "string"
+              description: "结束日期"
+            repeat:
+              type: "boolean"
+            link:
+              type: "string"
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/Advertisement"
+        "603":
+          description: "达到时段广告上限(8个)"
+  
+  /shops/{did}/timesegments/{tid}/advertisement/{id}:
+    post:
+      tags:
+      - "advertise"
+      summary: "管理员在广告时段下增加广告"    
+      description: "若广告有时段则覆盖原时段"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "authorization"
+        description: "用户token"
+        required: true
+        type: "string"
+      - name: "did"
+        in: "path"
+        description: "店 ID"
+        required: true
+        type: "integer"          
+      - name: "tid"
+        in: "path"
+        description: "广告时间段id"
+        type: "integer"
+        required: true
+      - name: "id"
+        in: "path"
+        description: "广告id"
+        type: "integer"
+        required: true
+      responses:
+        "default":
+          description: ""
+          schema:
+            type: "object"
+            properties:
+              errno:
+                type: "integer"
+                example: 0
+              errmsg: 
+                type: "string"
+                example: "成功"
+              data:
+                $ref: "#/definitions/Advertisement"
+        "603":
+          description: "达到时段广告上限"
+
+
+      
+        
+definitions:
+  Log:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      user:
+        $ref: "#/definitions/SimpleUser"
+      ip:
+        type: "string"
+      descr:
+        type: "string"
+      privilege:
+        $ref: "#/definitions/SimplePrivilege"
+      success:
+        type: "boolean"
+        description: "成功/失败"
+      gmtCreate:
+        type: "string"
+
+  FileInfo:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      beginTime:
+        type: "string"
+      endTime:
+        type: "string"
+      beginDate:
+        type: "string"
+      endDate:
+        type: "string"
+      createDate: 
+        type: "string"
+      first_check_id:
+        type: "string"
+      second_check_id:
+        type: "string"
+      state :
+        type: "string"
+    
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      userName:
+        type: "string"
+      name:
+        type: "string"
+      mobile:
+        type: "string"
+      email:
+        type: "string"
+      gender:
+        type: "string"
+        description: "0:男/1:女"
+      birthday:
+        type: "string"
+        format: "YYYY-MM-DD"
+        description: "用户生日，格式定义为年-月-日"
+      state:
+        type: "integer"
+        description: "状态"        
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"   
+
+  SimpleUser:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      userName:
+        type: "string"
+      name:
+        type: "string"
+
+  Cart:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      goodSkuId:
+        type: "integer"
+      skuName:
+        type: "integer"
+        description: "规格名称"
+      quantity:
+        type: "string"
+      price:
+        type: "integer"
+        description: "商品被加入购物车时的价格"
+      couponActivity:
+        type: "array"
+        description: "适用的优惠活动"
+        items:
+            properties:
+              id:
+                type: "integer"
+              name:
+                type: "string"
+              beginTime:
+                type: "string"
+              endTime:
+                type: "string"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"   
+
+  FootPrint:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      goodsSku: 
+        $ref: "#/definitions/SimpleSku"
+      gmtCreate:
+        description: "浏览时间"
+        type: "string"
+
+  TimeSegment:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      beginTime:
+        type: "string"
+        description: "开始时间,只有小时以后的值有意义"
+      endTime: 
+        type: "string"
+        description: "结束时间,只有小时以后的值有意义"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string" 
+  
+  Advertisement: 
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      link:
+        type: "string"
+        description: "链接"
+      imagePath:
+        type: "string"
+        description: "广告图片路径"
+      content:
+        type: "string"
+      segId:
+        type: "integer"
+        description: "广告时间段"
+      state:
+        type: "integer"
+        description: "状态"
+      weight:
+        type: "string"
+        description: "排序权重"
+      default:
+        type: "boolean"
+      beginDate:
+        type: "string"
+        description: "开始日期"
+      endDate:
+        type: "string"
+        description: "结束日期"
+      repeat:
+        type: "boolean"
+        description: "是否为每日重复广告"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"   
+          
+  Collection:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      goodSku:
+        $ref: "#/definitions/SimpleSku"
+      gmtCreate:
+        type: "string"
+
+  Region:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      pid:
+        type: "integer"
+        description: "上级id"
+      name:
+        type: "string"
+      postalCode:
+        type: "string"
+      state:
+        type: "integer"
+        description: "0有效/1废除"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"   
+  
+  Address:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      regionId:
+        type: "integer"
+      detail:
+        type: "string"
+      consignee:
+        type: "string"
+      mobile:
+        type: "string"
+      default:
+        type: "boolean"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"  
+        
+  Share:
+    description: "分享结果"
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      sharerId:
+        type: "string"
+      sku:
+        $ref: "#/definitions/SimpleSku"
+      quantity:
+        type: "integer"
+        description: "成功返点的商品件数"
+      gmtCreate:
+        type: "integer"
+  
+  BeShared:
+    description: "分享成功"
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      sku:
+        $ref: "#/definitions/SimpleSku"
+      sharerId:
+        type: "integer"
+      customerId:
+        type: "integer"
+      orderId:
+        type: "integer"
+        default: 0
+      rebate:
+        type: "integer"
+      gmtCreate:
+        type: "string"
+        format: "YYYY-MM-DD"
+        description: "点击时间"
+  
+  ShareActivity:
+    description: "分享活动"
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      shopId:
+        type: "integer"
+        description: "0表示该活动为平台发布，其他为商家发布"
+      skuId:
+        type: "integer"
+      beginTime: 
+        type: "string"
+        format: "YYYY-MM-DD"
+      endTime: 
+        type: "string"
+        format: "YYYY-MM-DD"
+      state:
+        type: "integer"
+        description: "状态：0 下线，1 上线, 2 删除"
+  
+  SimpleAftersale:
+    description: "售后服务"
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      orderId:
+        type: "integer"
+      orderItemId:
+        type: "integer"
+      customerId:
+        type: "integer"
+      shopId:
+        type: "string"
+      serviceSn:
+        type: "string"
+      type:
+        type: "integer"
+        description: "0换货，1退货"
+      reason:
+        type: "string"
+      refund:
+        type: "integer"
+        description: "退款金额"
+      quantity:
+        type: "integer"
+        description: "货物数量"
+      regionId:
+        type: "integer"
+      detail:
+        type: "string"
+        description: "详细地址"
+      consignee:
+        type: "string"
+      mobile:
+        type: "string"
+      customerLogSn:
+        type: "string"
+        description: "寄回运单号"
+      shopLogSn:
+        type: "string"
+        description: "寄出运单号"  
+      state: 
+        type: "integer"
+  
+  Aftersale:
+    description: "售后服务"
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      orderId:
+        type: "integer"
+      orderSn:
+        type: "string"
+      orderItemId:
+        type: "integer"
+      skuId:
+        type: "integer"
+      skuName:
+        type: "string"
+      customerId:
+        type: "integer"
+      shopId:
+        type: "string"
+      serviceSn:
+        type: "string"
+      type:
+        type: "integer"
+        description: "0换货，1退货"
+      reason:
+        type: "string"
+      refund:
+        type: "integer"
+        description: "退款金额"
+      quantity:
+        type: "integer"
+        description: "货物数量"
+      regionId:
+        type: "integer"
+      detail:
+        type: "string"
+        description: "详细地址"
+      consignee:
+        type: "string"
+      mobile:
+        type: "string"
+      customerLogSn:
+        type: "string"
+        description: "寄回运单号"
+      shopLogSn:
+        type: "string"
+        description: "寄出运单号"  
+      state: 
+        type: "integer"      
+  
+  SimpleAdminUser:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userName:
+        type: "string"
+
+  AdminUser:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userName:
+        type: "string"
+      mobile:
+        type: "string"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      avatar:
+        type: "string"
+      lastLoginTime:
+        type: "string"
+      lastLoginIp:
+        type: "string"
+      status:
+        type: "integer"
+        format: "int32"
+        description: "用户状态"
+      depart_id:
+        type: "integer"
+        format: "int64"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"
+        
+  ProxyUser:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userA:
+        $ref: "#/definitions/SimpleAdminUser"
+      userB:
+        $ref: "#/definitions/SimpleAdminUser"        
+      beginDate:
+        type: "string"
+      endDate:
+        type: "string"
+      valid:
+        type: "boolean"
+      gmtCreate:
+        type: "string"
+    
+  SimpleRole:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name: 
+        type: "string"
+
+    
+  Role:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name: 
+        type: "string"
+      desc:
+        type: "string"
+      createdBy:
+        $ref: "#/definitions/SimpleUser"
+      departId:
+        type: "integer"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"
+  
+  UserRole:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      user:
+        $ref: "#/definitions/SimpleAdminUser"
+      role:
+        $ref: "#/definitions/SimpleRole"
+      creator:
+        $ref: "#/definitions/SimpleAdminUser"
+      gmtModified:
+        type: "string"        
+  
+  SimplePrivilege:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name: 
+        type: "string"
+  
+        
+  Privilege:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name: 
+        type: "string"
+      url:
+        type: "string"
+      requestType:
+        type: "integer"
+        format: "int32"
+      gmtCreate:
+        type: "string"
+      gmtModified:
+        type: "string"  
+
+  RolePrivilege:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      role:
+        $ref: "#/definitions/SimpleRole"
+      privilege:
+        $ref: "#/definitions/SimplePrivilege"
+      creator:
+        $ref: "#/definitions/SimpleAdminUser"
+      gmtModified:
+        type: "string"        
+        
+  State:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        description: "状态码"
+      name: 
+        type: "string"
+        description: "状态描述"
+
+  OrderItem:
+    description: "订单明细"
+    type: "object"
+    properties:
+      skuId:
+        description: "sku id"
+        type: "integer"
+        format: "int64"
+      orderId:
+        description: "订单id"
+        type: "integer"
+        format: "int64"
+      name:
+        description: "商品被下单时的名称"
+        type: "string"
+      quantity:
+        description: "订购数量"
+        type: "integer"
+        format: "int32"
+      price:
+        description: "下单时商品单价"
+        type: "integer"
+        format: "int64"
+      discount:
+        description: "优惠金额"
+        type: "integer"
+        format: "int64"
+      couponActId:
+        description: "使用的优惠活动 id"
+        type: "integer"
+        format: "int64"
+      beSharedId:
+        description: "分享成功id，如果该订单分享返点了，否则为0"
+        type: "integer"
+        format: "int64"
+  
+  SimpleOrderInfo:
+    description: "订单概要信息"
+    type: "object"
+    properties:
+      id:
+        description: "订单id"
+        type: "integer"
+        format: "int64"
+      customerId:
+        description: "用户id"
+        type: "integer"
+        format: "int64"
+      shopId:
+        description: "店铺号"
+        type: "integer"
+        format: "int64"
+      pid:
+        description: "母单id"
+        type: "integer"
+        format: "int64"
+      orderType:
+        description: "订单的类别"
+        type: "integer"
+        format: "int32"
+      state:
+        description: "订单状态"
+        type: "integer"
+        format: "int32"
+      subState:
+        description: "订单子状态"
+        type: "integer"
+        format: "int32"
+      gmtCreate:
+        description: "订单创建时间"
+        type: "integer"
+        format: "timestamp"
+      originPrice:
+        description: "订单商品优惠前价格"
+        type: "integer"
+        format: "int64"
+      discountPrice:
+        description: "订单优惠价格"
+        type: "integer"
+        format: "int64"
+      freightPrice:
+        description: "运费"
+        type: "integer"
+        format: "int64"
+      grouponId:
+        description: "团购活动id"
+        type: "integer"
+        format: "int64"
+      presaleId:
+        description: "预售活动id"
+        type: "integer"
+        format: "int64"    
+      shipmentSn:
+        description: "快递单号"
+        type: "string"  
+  
+  OrderInfo:
+    description: "订单的完整信息"
+    type: "object"
+    properties:
+      id:
+        description: "订单id"
+        type: "integer"
+        format: "int64"
+      orderSn:
+        description: "订单序号"
+        type: "string"
+      customer:
+        $ref: "#/definitions/SimpleUser"
+      shop:
+        $ref: "#/definitions/Shop"
+      pid:
+        description: "母单id"
+        type: "integer"
+        format: "int64"
+      orderType:
+        description: "订单的类别"
+        type: "integer"
+        format: "int32"
+      state:
+        description: "订单状态"
+        type: "integer"
+        format: "int32"
+      subState:
+        description: "订单子状态"
+        type: "integer"
+        format: "int32"
+      gmtCreate:
+        description: "订单创建时间"
+        type: "string"
+      gmtModified:
+        description: "订单修改时间"
+        type: "string"
+      confirmTime:
+        description: "订单发货时间"
+        type: "string"
+      originPrice:
+        description: "订单商品优惠前价格"
+        type: "integer"
+        format: "int64"
+      discountPrice:
+        description: "订单优惠价格"
+        type: "integer"
+        format: "int64"
+      freightPrice:
+        description: "运费"
+        type: "integer"
+        format: "int64"
+      rebateNum:
+        description: "返给分享者的点数"
+        type: "integer"
+        format: "int64"  
+      message:
+        description: "附言"
+        type: "string"
+      regionId:
+        description: "收货地区"
+        type: "integer"
+      address:
+        description: "详细地址"
+        type: "string"
+      mobile:
+        description: "电话"
+        type: "string"
+      consignee:
+        description: "收货人"
+        type: "string"
+      couponId:
+        description: "使用的优惠卷id"
+        type: "integer"
+        format: "int64"
+      grouponId:
+        description: "团购活动id"
+        type: "integer"
+        format: "int64"
+      presaleId:
+        description: "预售活动id"
+        type: "integer"
+        format: "int64"    
+      shipmentSn:
+        description: "快递单号"
+        type: "string"
+      orderItems:
+        description: "所有订单内容物的完整信息"
+        type: "array"
+        items:
+          $ref: "#/definitions/OrderItem"
+
+  FreightModel:
+    description: "运费模板"
+    type: "object"
+    properties:
+      id:
+        description: "运费模板id"
+        type: "integer"
+        format: "int64"
+      name:
+        description: "卖家定义的运费模板名"
+        type: "string"
+      type:
+        description: "运费模板类型"
+        type: "integer"
+      unit:
+        description: "计量单位（克或个）"
+        type: "integer"
+      default:
+        description: "默认模板"
+        type: "boolean"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"     
+        
+  WeightModelItem:
+    description: "重量运费模版内容"
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "id"
+      firstWeight:
+        description: "首重"
+        type: "integer"
+      firstWeightFreight:
+        description: "首重价格"
+        type: "integer"
+        format: "int32"
+      tenPrice:
+        description: "10kg以下每0.5kg价格"
+        type: "integer"
+        format: "int32"
+      fiftyPrice:
+        description: "50kg以下每0.5kg价格"
+        type: "integer"
+        format: "int32" 
+      hundredPrice:
+        description: "100kg以下每0.5kg价格"
+        type: "integer"
+        format: "int32"
+      trihunPrice:
+        description: "300kg以下每0.5kg价格"
+        type: "integer"
+        format: "int32"
+      abovePrice:
+        description: "300kg以上每0.5kg价格"
+        type: "integer"
+        format: "int32"
+      regionId:
+        description: "抵达地区码"
+        type: "integer"
+        format: "int64"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"   
+
+  PieceModelItem:
+    description: "按件数运费模版内容"
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "id"
+      regionId:
+        description: "抵达地区码"
+        type: "integer"
+        format: "int64"
+      firstItem:
+        description: "首件数"
+        type: "integer"
+        format: "int32"
+      firstItemPrice:
+        description: "规则首件运费"
+        type: "integer"
+        format: "int64"
+      additionalItems:
+        description: "规则续件数"
+        type: "integer"
+        format: "int32"
+      additionalItemsPrice:
+        description: "规则续件运费"
+        type: "integer"
+        format: "int64"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"   
+
+  Payment:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "支付id"
+      orderId:
+        type: "integer"
+        description: "订单id"
+      aftersaleId:
+        type: "integer"
+        description: "售后单id"        
+      amount:
+        type: "integer"
+        description: "支付金额"
+      actualAmount:
+        type: "integer"
+        description: "实际支付金额"
+      payTime:
+        type: "string"
+        format: "datetime"
+        description: "支付时间"
+      paymentPattern:
+        type: "string"
+        description: "支付渠道"
+      state:
+        type: "integer"
+        description: "支付状态"
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "开始支付时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "结束支付时间"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"   
+  
+  Refund:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "退款id"
+      paymentId:
+        type: "integer"
+        description: "支付id"
+      amount:
+        type: "integer"
+        description: "退款金额"
+      state:
+        type: "integer"
+        description: "支付状态"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间" 
+      orderId:
+        type: "integer"
+        description: "订单id"
+      aftersaleId:
+        type: "integer"
+        description: "售后单id"     
+        
+        
+  CouponSpu:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      activityId:
+        type: "integer"
+        format: "int64"
+        description: "活动id"
+      sku:
+        $ref: "#/definitions/SimpleSku"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"  
+
+  SimpleCoupon:
+    type: "object"
+    description: "优惠卷"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "优惠卷id"
+      activity:
+        $ref: "#/definitions/SimpleCouponActivity"
+      name:
+        type: "string"
+        description: "优惠券名称"
+      couponSn:
+        type: "string"
+        description: "优惠券编号"
+
+  Coupon:
+    type: "object"
+    description: "优惠卷"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "优惠卷id"
+      activity:
+        $ref: "#/definitions/SimpleCouponActivity"
+      customerId:
+        type: "integer"
+        format: "int64"
+        description: "顾客ID"
+      name:
+        type: "string"
+        description: "优惠券名称"
+      couponSn:
+        type: "string"
+        description: "优惠券编号"
+      state:
+        type: "integer"
+        description: "优惠卷状态"
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "活动开始时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "活动结束时间"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+
+  SimpleCouponActivity:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "活动id"
+      name:
+        type: "string"
+        description: "优惠活动名称"
+      imageUrl:
+        type: "string"
+        description: "图片链接"  
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "活动开始时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "活动结束时间"  
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "优惠券数目，0-不用优惠券"
+      couponTime:
+        type: "string"
+        format: "datetime"
+        description: "开始领优惠卷时间"  
+
+  CouponActivity:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "活动id"
+      name:
+        type: "string"
+        description: "优惠活动名称"
+      state:
+        type: "integer"
+        description: "活动状态"
+      shop:
+        $ref: "#/definitions/SimpleShop"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "优惠券数目，0-不用优惠券"
+      quantityType:
+        type: "integer"
+        description: "0-每人数量，1-总数控制"
+      validTerm:
+        type: "integer"
+        description: "从领取那天起的有效时间，0-与活动同"
+      imageUrl:
+        type: "string"
+        description: "图片链接"    
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "活动开始时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "活动结束时间"
+      couponTime:
+        type: "string"
+        format: "datetime"
+        description: "开始领优惠卷时间"
+      strategy:
+        type: "string"
+        description: "活动规则JSON"
+      createdBy:
+        $ref: "#/definitions/SimpleAdminUser"
+      ModiBy:
+        $ref: "#/definitions/SimpleAdminUser"        
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+
+  SimpleCategory:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+
+  Category:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      pid:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+        
+  Comment:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "评论id"
+      customer:
+        $ref: "#/definitions/SimpleUser"
+      goodsSkuId:
+        type: "integer"
+        format: "int64"
+        description: "评论的SKU ID"
+      type:
+        type: "integer"
+        description: "0好评，1中评，2差评"
+      content:
+        type: "string"
+        description: "内容"
+      state:
+        type: "integer"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+
+  FloatPrice:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "id"
+      activityPrice:
+        type: "integer"
+        format: "int64"
+        description: "浮动价格"
+      quantity:
+        type: "integer"
+        format: "int64"
+        description: "可销售的数量"
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "开始时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "结束时间"
+      createdBy:
+        $ref: "#/definitions/SimpleAdminUser"
+      modifiedBy:
+        $ref: "#/definitions/SimpleAdminUser"
+      valid:
+        type: "boolean"
+        description: "有效/无效"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"  
+  
+  SimpleGrouponActivity:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "活动id"
+      name:
+        type: "string"
+        description: "活动名称"
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "开始时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "结束时间"      
+  
+  GrouponActivity:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "活动id"
+      name:
+        type: "string"
+        description: "活动名称"
+      goodsSpu:
+        $ref: "#/definitions/SimpleSpu"
+      shop:
+        $ref: "#/definitions/SimpleShop"
+      strategy:
+        type: "string"
+        format: "团购规则JSON"
+      state:
+        type: "integer"
+        format: "活动状态"
+      beginTime:
+        type: "string"
+        format: "datetime"
+        description: "开始时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "结束时间"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"    
+
+  SimplePresaleActivity:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "预售活动id"
+      name:
+        type: "string"
+        description: "活动名称"        
+      BeginTime:
+        type: "string"
+        format: "datetime"
+        description: "活动开始时间"
+      payTime:
+        type: "string"
+        format: "datetime"
+        description: "开始支付尾款时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "活动结束时间"
+      advancePayPrice: 
+        type: "integer"
+        format: "int64"
+        description: "定金"
+      restPayPrice: 
+        type: "integer"
+        format: "int64"
+        description: "尾款"  
+
+  PresaleActivity:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "预售活动id"
+      name:
+        type: "string"
+        description: "活动名称"        
+      BeginTime:
+        type: "string"
+        format: "datetime"
+        description: "活动开始时间"
+      payTime:
+        type: "string"
+        format: "datetime"
+        description: "开始支付尾款时间"
+      endTime:
+        type: "string"
+        format: "datetime"
+        description: "活动结束时间"
+      goodsSku:
+        $ref: "#/definitions/SimpleSku"
+      shop:
+        $ref: "#/definitions/SimpleShop"
+      state:
+        type: "string"
+        description: "活动状态"
+      quantity: 
+        type: "integer"
+        format: "int64"
+        description: "活动库存量"
+      advancePayPrice: 
+        type: "integer"
+        format: "int64"
+        description: "定金"
+      restPayPrice: 
+        type: "integer"
+        format: "int64"
+        description: "尾款"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"  
+
+  FlashSale:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "秒杀id"
+      flashDate:
+        type: "string"
+        format: "datetime"
+        description: "秒杀时间"
+      timeSeq:
+        $ref: "#/definitions/TimeSegment"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+
+  FlashSaleItem:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "秒杀Item id"
+      goodsSku:
+        $ref: "#/definitions/SimpleSku"
+      price:
+        type: "integer"
+      quantity:
+        type: "integer"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+
+  SimpleSpu:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "SPU ID"
+      name:
+        type: "string"
+      goodsSn:
+        type: "string"
+      imageUrl:
+        type: "string"
+      state:
+        type: "integer"
+        description: "商品状态"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+      disable:
+        type: "boolean"
+        default: false
+        description: "商店关闭造成商品无法出售"
+
+  Spu:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "SPU ID"
+      name:
+        type: "string"
+      brand:
+        $ref: "#/definitions/SimpleBrand"
+      category:
+        $ref: "#/definitions/SimpleCategory"
+      freight:
+        $ref: "#/definitions/FreightModel"
+      shop:
+        $ref: "#/definitions/SimpleShop"
+      goodsSn:
+        type: "string"
+      detail:
+        type: "string"
+        description: "商品详细描述"
+      imageUrl:
+        type: "string"
+      spec:
+        $ref: "#/definitions/Spec"
+      skuList:
+        type: "array"
+        items:
+          $ref: "#/definitions/SimpleSku"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+      disable:
+        type: "boolean"
+        default: false
+        description: "商店关闭造成商品无法出售"
+
+  Sku:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "SKU ID"
+      name:
+        type: "string"
+      skuSn:
+        type: "string"
+      detail:
+        type: "string"
+        description: "详细描述"
+      imageUrl:
+        type: "string"
+      originalPrice:
+        type: "integer"
+        description: "原价"
+      price:
+        type: "integer"
+        description: "现价"
+      inventory:
+        type: "integer"
+        description: "库存"
+      state:
+        type: "integer"
+        description: "商品状态"        
+      configuration:
+        type: "string"
+        description: "配置参数JSON"
+      weight:
+        type: "integer"
+        description: "重量"
+      gmtCreate:
+        type: "string"
+        format: "datetime"
+        description: "创建时间"
+      gmtModified:
+        type: "string"
+        format: "datetime"
+        description: "修改时间"
+      spu:
+        $ref: "#/definitions/Spu"
+      disable:
+        type: "boolean"
+        default: false
+        description: "商店关闭造成商品无法出售"
+
+  SimpleSku:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "SKU ID"
+      name:
+        type: "string"
+      skuSn:
+        type: "string"
+      imageUrl:
+        type: "string"
+      inventory:
+        type: "integer"
+        description: "库存"
+      originalPrice:
+        type: "integer"
+        description: "原价"
+      price:
+        type: "integer"
+        description: "现价"        
+      disable:
+        type: "boolean"
+        default: false
+        description: "商店关闭造成商品无法出售"
+
+  Spec:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "spec id"
+      name:
+        type: "string"
+        description: "规格名称"
+      specItems:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "integer"
+              description: "spec id"
+            name:
+              type: "string"
+              description: "规格内容"
+            
+  SimpleBrand:
+    type: "object"
+    properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        imageUrl:
+          type: "string"
+
+  Brand:
+    type: "object"
+    properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        imageUrl:
+          type: "string"
+        detail:
+          type: "string"
+        gmtCreate:
+          type: "string"
+          format: "datetime"
+          description: "创建时间"
+        gmtModified:
+          type: "string"
+          format: "datetime"
+          description: "修改时间"
+
+  SimpleShop:
+    type: "object"
+    properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+
+  Shop:
+    type: "object"
+    properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        state:
+          type: "integer"
+        gmtCreate:
+          type: "string"
+          format: "datetime"
+          description: "创建时间"
+        gmtModified:
+          type: "string"
+          format: "datetime"
+          description: "修改时间"
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /mingqcn/OOMALL/1.0.3
