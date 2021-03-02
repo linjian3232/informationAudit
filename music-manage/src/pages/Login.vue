@@ -49,7 +49,7 @@ export default {
         if(res.code == 1){
           // vue提供的一个缓存机制，类似一个map
           localStorage.setItem('userName',this.ruleForm.username)
-        this.$router.push({path:`/uploader`,query:{username}});
+          this.$router.push({path:`/uploader`,query:{username}});
           this.notify("登录成功"+"\n"+"上传者界面","success");
         }
          if(res.code == 2){

@@ -182,7 +182,8 @@ export default {
        }
    },
     created(){
-        this.username = this.$route.query.username;
+        this.username =  localStorage.getItem('userName');
+        console.log("created:"+this.$route.query.username)
         this.getData();
     },
 
@@ -192,6 +193,7 @@ export default {
         },
         //查询所有上传者
         getData(){
+            
             this.tempData = [];
             this.tableData = [];
             getAllUploader().then(res => {
@@ -199,6 +201,7 @@ export default {
                 this.tableData=res;
                 this.currentPage=1;
             })
+            console.log("登录者"+this.username);
         },
         addUploader(){
 
@@ -284,8 +287,9 @@ export default {
         },
         songEdit(id,name)
         {
+            console.log(name+"    "+this.username);
             if(this.username==name){
-            this.$router.push({path:`/Song`,query:{id,name}});
+            this.$router.push({path:`/PersonalFile`,query:{id,name}});
             this.notify("文件管理页面","success");
 
             }

@@ -38,29 +38,23 @@ export const songOfStatus= (status,singerId) =>get(`song/songOfStatus?status=${s
 //更新歌曲状态
 export const updateSongStatus= (params) =>post(`song/updateStatus`,params);
 
-//=====================歌单相关=======================
 
-//查询歌手
-export const getAllSongList = () => get(`songList/allSongList`);
+//=====================文件相关=======================
+export const getAllPublicFile = () =>get(`publicFile/allPublicFile`);
 
-//添加歌手
-export const setSongList= (params) => post(`songList/add`,params);
+export const publicFileOfUploaderId=(id) => get(`publicFile/uploader/detail?uploaderId=${id}`);
 
-//修改歌手信息
-export const updateSongList = (params) => post(`songList/update`,params);
+export const updatePublicFile= (params) =>post(`publicFile/update`,params);
 
-//删除歌手
-export const deleteSongList = (id) => get(`songList/delete?id=${id}`);
+export const delPublicFile= (id) =>get(`publicFile/delete?id=${id}`);
 
-//=====================歌单的歌曲相关=======================
-//根据歌单id查询歌曲列表
-export const listSongDetail = (songListId) => get(`listSong/detail?songListId=${songListId}`);
-//给歌单增加歌曲
-export const listSongAdd = (params) => post(`listSong/add`,params);
-//删除歌单的歌曲
-export const delListSong = (songId,songListId) => get(`listSong/delete?songId=${songId}&songListId=$
-{songListId}`);
+//根据歌曲id查询歌曲对象
+export const publicFileOfPublicFileId= (id) =>get(`publicFile/detail?publicFileId=${id}`);
 
+export const publicFileOfStatus= (status,uploaderId) =>get(`publicFile/publicFileOfStatus?status=${status}&&uploaderId=${uploaderId}`);
+
+//更新歌曲状态
+export const updatePublicFileStatus= (params) =>post(`publicFile/updateStatus`,params);
 //=====================用户相关==================================
 //查询所有用户
 export const getAllConsumer = () => get(`consumer/allConsumer`);

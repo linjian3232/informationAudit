@@ -46,7 +46,7 @@
                 <template slot-scope="scope">
                     <el-button size="mini" @click="download(scope.row.url,scope.row.name)" class= "update_button">下载</el-button>
                     <br/>
-                    <el-button size="mini" @click="changeStatus(scope.row.id)" class= "update_button">同意</el-button>
+                    <el-button size="mini" @click="changeStatus(scope.row.id,1)" class= "update_button">同意</el-button>
                 </template>
             </el-table-column>
 
@@ -273,9 +273,10 @@ export default {
         },
 
 
-        changeStatus(id){
+        changeStatus(id,status){
             let params = new URLSearchParams();
              params.append('id',id);
+             params.append('status',status)
              updateSongStatus(params)
             .then(res => {
                 if(res.code == 1){

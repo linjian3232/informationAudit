@@ -28,6 +28,26 @@ export const mixin = {
         }
         return value;
     },
+
+     // 获取审核状态中文
+     statusStyle(value){
+        if(value == '0'){
+            return "未审核";
+        }
+        if(value == '1'){
+            return "一级审核通过";
+        }
+        if(value == '2'){
+            return "二级审核通过";
+        }
+        if(value == '-1'){
+            return '一级审核未通过';
+        }
+        if(value == '-2'){
+            return '二级审核未通过';
+        }
+        return value;
+    },
     // 获取生日
     attachBirth(val){
         return String(val).substr(0,10); 

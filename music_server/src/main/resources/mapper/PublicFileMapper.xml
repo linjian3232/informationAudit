@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaclimb.music.dao.PublicFileMapper">
+    <resultMap id="BaseResultMap" type="com.javaclimb.music.domain.PublicFile" >
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uploader_id" jdbcType="INTEGER" property="uploaderId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="first_reason" jdbcType="LONGVARCHAR" property="firstReason"/>
+        <result column="second_reason" jdbcType="LONGVARCHAR" property="secondReason"/>
+        <result column="begin_time" jdbcType="VARCHAR" property="beginTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate"/>
+        <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,uploader_id,name,introduction,create_time,update_time,status,first_reason,second_reason,begin_time,end_time,begin_date,end_date,url
+    </sql>
+    <insert id="insert" parameterType="com.javaclimb.music.domain.PublicFile">
+        insert into file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uploaderId != null">
+                uploader_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+            create_time,update_time,
+            <if test="status != null">
+                status,
+            </if>
+            <if test="firstReason != null">
+                first_reason,
+            </if>
+            <if test="secondReason != null">
+                second_reason,
+            </if>
+            <if test="beginTime != null">
+                begin_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="beginDate != null">
+                begin_date,
+            </if>
+            <if test="endDate != null">
+                end_date,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="uploaderId != null">
+                #{uploaderId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="introduction != null">
+                #{introduction},
+            </if>
+            now(),now(),
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="firstReason != null">
+                #{firstReason},
+            </if>
+            <if test="secondReason != null">
+                #{secondReason},
+            </if>
+            <if test="beginTime != null">
+                #{beginTime},
+            </if>
+            <if test="endTime != null">
+                #{endTime},
+            </if>
+            <if test="beginDate != null">
+                #{beginDate},
+            </if>
+            <if test="endDate != null">
+                #{endDate},
+            </if>
+            <if test="url != null">
+                #{url},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.javaclimb.music.domain.PublicFile">
+        update file
+        <set>
+            <if test="uploaderId != null">
+                uploader_id=#{uploaderId},
+            </if>
+            <if test="introduction != null">
+                introduction=#{introduction},
+            </if>
+            <if test="name != null">
+                name=#{name},
+            </if>
+           update_time = now(),
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="firstReason != null">
+                first_reason#{firstReason},
+            </if>
+            <if test="secondReason != null">
+                second_reason = #{secondReason},
+            </if>
+            <if test="beginTime != null">
+                begin_time = #{beginTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="beginDate != null">
+               begin_date = #{beginDate},
+            </if>
+            <if test="endDate != null">
+               end_date = #{endDate},
+            </if>
+            <if test="url != null">
+                url = #{url},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from file
+        where id=#{id}
+    </delete>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from file
+        where id = #{id}
+    </select>
+
+    <select id="allFile" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from file
+    </select>
+
+
+    <select id="publicFileOfStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from file
+        where status = #{status}
+    </select>
+
+    <select id="publicFileOfName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from file
+        where name = #{name}
+    </select>
+
+    <select id="publicFileOfUploaderId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from file
+        where uploader_id = #{uploaderId}
+    </select>
+</mapper>

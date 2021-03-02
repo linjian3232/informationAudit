@@ -48,12 +48,12 @@ export default {
                 {
                     icon: 'el-icon-document',
                     index: 'Reviewer',
-                    title: '审核者管理'
+                    title: '一级审核者'
                 },
                  {
                     icon: 'el-icon-document',
-                    index: 'SongList',
-                    title: '歌单管理'
+                    index: 'Teminator',
+                    title: '二级审核者'
                 }
 
             ]
@@ -93,7 +93,7 @@ export default {
 
 /* not(el-menu--collapse)的意义在于只有当collapse（折叠状态为false的时候）才采用该css样式 */
 .sidebar-el-menu:not(.el-menu--collapse){
-    width: 150px;
+    width: 250px;
 }
 
 /* 解决因为v-for产生列表多出一截空白 */
