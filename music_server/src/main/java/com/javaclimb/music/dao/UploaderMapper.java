@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 歌手Dao
+ * 上传者Dao
  */
 @Repository
 public interface UploaderMapper {
@@ -31,15 +31,22 @@ public interface UploaderMapper {
     public Uploader selectByPrimaryKey(Integer id);
 
     /**
-     * 查询所有歌手
+     * 查询所有上传者
      */
     public List<Uploader> allUploader();
 
 
     /**
-     * 根据歌手名字模糊查询列表
+     * 根据上传者名字模糊查询列表
      */
     public List<Uploader> uploaderOfName(String name);
 
     public List<Uploader> uploaderOfGender (Integer gender);
+
+    /**
+     * 根据学号查询是否有此用户
+     * @param studyNumber
+     * @return
+     */
+    public List<Uploader> uploaderOfStudyNumber (String studyNumber);
 }

@@ -48,4 +48,12 @@ public interface UploaderService {
      */
     public List<Uploader> uploaderOfGender (Integer gender);
 
+    /**
+     * 根据学号查询是否有此用户
+     * @param studyNumber
+     * @return
+     */
+    public List<Uploader> uploaderOfStudyNumber (String studyNumber);
+
+
 }

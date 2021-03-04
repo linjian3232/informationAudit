@@ -54,6 +54,21 @@ export default new Router({
           path: '/Refuse',
           component: resolve => require(['../pages/RefusePage.vue'], resolve)
         }
+        ,
+        {
+          path: '/Agree',
+          component: resolve => require(['../pages/AgreePage.vue'], resolve)
+        }
+        ,
+        {
+          path: '/Disagree',
+          component: resolve => require(['../pages/DisagreePage.vue'], resolve)
+        }
+        ,
+        {
+          path: '/Wait',
+          component: resolve => require(['../pages/WaitPage.vue'], resolve)
+        }
       ]
     }
    

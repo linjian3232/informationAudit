@@ -78,4 +78,15 @@ public class UploaderServiceImpl implements UploaderService {
     public List<Uploader> uploaderOfGender(Integer gender) {
         return uploaderMapper.uploaderOfGender(gender);
     }
+
+    /**
+     * 根据学号查询是否有此用户
+     *
+     * @param studyNumber
+     * @return
+     */
+    @Override
+    public List<Uploader> uploaderOfStudyNumber(String studyNumber) {
+        return uploaderMapper.uploaderOfStudyNumber(studyNumber);
+    }
 }

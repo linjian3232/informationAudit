@@ -139,6 +139,25 @@ public class UploaderController {
 
     }
 
+    /**
+     * 根据性别查询
+     */
+    @RequestMapping(value="/uploaderOfStudyNumber",method = RequestMethod.GET)
+    public Object uploaderOfStudyNumber(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String studyNumber=request.getParameter("studyNumber").trim();
+        List<Uploader>list=uploaderService.uploaderOfStudyNumber(studyNumber);
+        if(list.size()==0){
+            jsonObject.put(Consts.CODE,0);
+            jsonObject.put(Consts.MSG,"无此上传者");
+        }
+        else {
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"上传者已存在");
+        }
+            return jsonObject;
+    }
+
 
     /**
      * 更新上传者图片

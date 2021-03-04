@@ -117,6 +117,13 @@
         where name like #{name}
     </select>
 
+    <select id="uploaderOfStudyNumber" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from uploader
+        where study_number = #{studyNumber}
+    </select>
+
     <select id="uploaderOfGender" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>

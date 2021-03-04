@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="crumbs">
-            <i class="el-icon-tickets"></i>发布文件信息
+            发布文件页面
         </div>
         <div class="container">
             <div class="handle-box">
@@ -12,12 +12,11 @@
         <el-table size="mini" ref="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="40"></el-table-column>
             <el-table-column prop="name" label="上传者-文件名" width="120" align="center"></el-table-column>
-            <el-table-column prop="introduction" label="发布文件原因简述" width="250" align="center"></el-table-column>
-            <!-- <el-table-column label="发布文件原因简述">
+            <el-table-column label="发布文件原因简述" align="center">
                 <template slot-scope="scope">
                     <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
                 </template>
-            </el-table-column> -->
+            </el-table-column>
             <el-table-column label="发布预期日期" align="center" width="250">
                 <template slot-scope="scope">
                     <div >
@@ -45,16 +44,8 @@
             </el-table-column>
             <el-table-column prop="firstReason" label="一级审核反馈" width="150" align="center"></el-table-column>
             <el-table-column prop="secondReason" label="二级审核反馈" width="150" align="center"></el-table-column>
-            <el-table-column label="资源更新" align="center" width="250">
-                <template slot-scope="scope">
-                    <el-button size="mini" @click="changeStatus(scope.row.id,1)" class= "update_button">同意</el-button>
-                    <br/>
-                    <el-button size="mini" @click="changeStatus(scope.row.id,-1)" class= "update_button">否决</el-button>
-                </template>
-            </el-table-column>
             <el-table-column label="操作" width="250" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="handleEdit(scope.row)" class= "edit_button">编辑</el-button>
                     <el-button size="mini" @click="download(scope.row.url,scope.row.name)" class= "edit_button">下载</el-button>
                     <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)" class="delete_button">删除</el-button> 
                 </template>

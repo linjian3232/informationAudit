@@ -18,6 +18,8 @@ export const updateUploader = (params) => post(`uploader/update`,params);
 //删除歌手
 export const deleteUploader = (id) => get(`uploader/delete?id=${id}`);
 
+export const uploaderOfStudyNumber = (studyNumber) => get(`uploader/uploaderOfStudyNumber?studyNumber=${studyNumber}`);
+
 // //=====================歌曲相关=======================
 // export const getAllSong = () =>get(`song/allSong`);
 

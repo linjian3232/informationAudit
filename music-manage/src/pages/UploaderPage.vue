@@ -78,7 +78,7 @@
             </el-form>
             <span slot="footer">
                 <el-button size="mini" @click="centerDialogVisible = false">取消</el-button>
-                <el-button size="mini" @click="addUploader">确定</el-button>
+                <el-button size="mini" @click="beforeAddUploader(registerForm.studyNumber)">确定</el-button>
             </span>
         </el-dialog>
 
@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import {setUploader,getAllUploader,updateUploader,deleteUploader} from '../api/index';
+import {setUploader,getAllUploader,updateUploader,deleteUploader,uploaderOfStudyNumber} from '../api/index';
 import {mixin} from '../mixins/index';
 export default {
     mixins:[mixin],
@@ -205,8 +205,19 @@ export default {
             })
             console.log("登录者"+this.username);
         },
-        addUploader(){
 
+        beforeAddUploader(number){
+            uploaderOfStudyNumber(number).then(res =>{
+                if(res.code==1){
+                    this.notify(res.msg,"error");
+                }
+                else{
+                    this.addUploader();
+                }
+            })
+        },
+        addUploader(){
+    
             let params=new URLSearchParams();
             params.append('name',this.registerForm.name);
             params.append('studyNumber',this.registerForm.studyNumber);
