@@ -123,7 +123,7 @@
                 status = #{status},
             </if>
             <if test="firstReason != null">
-                first_reason#{firstReason},
+                first_reason = #{firstReason},
             </if>
             <if test="secondReason != null">
                 second_reason = #{secondReason},

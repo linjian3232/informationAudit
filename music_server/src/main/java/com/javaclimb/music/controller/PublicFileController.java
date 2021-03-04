@@ -127,7 +127,7 @@ public class PublicFileController {
      * 修改歌曲
      */
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public Object updatePublicFileStatus(HttpServletRequest request){
+    public Object updatePublicFile(HttpServletRequest request){
         JSONObject jsonObject=new JSONObject();
         String id=request.getParameter("id").trim();
         String introduction=request.getParameter("introduction").trim();
@@ -172,12 +172,14 @@ public class PublicFileController {
      * 修改歌曲状态
      */
     @RequestMapping(value = "/updateStatus",method = RequestMethod.POST)
-    public Object updatePublicFile(HttpServletRequest request){
+    public Object updatePublicFileStatus(HttpServletRequest request){
         JSONObject jsonObject=new JSONObject();
         String id=request.getParameter("id").trim();
         String status=request.getParameter("status").trim();
+        System.out.println("change Status to:"+status);
         //保存到歌曲对象中
         PublicFile publicFile=new PublicFile();
+        System.out.println("id:"+id+"  status:"+status);
         publicFile.setId(Integer.parseInt(id));
         publicFile.setStatus(Integer.parseInt(status));
         boolean flag=publicFileService.update(publicFile);
@@ -188,6 +190,30 @@ public class PublicFileController {
         }
         jsonObject.put(Consts.CODE,0);
         jsonObject.put(Consts.MSG,"审核失败");
+        return jsonObject;
+    }
+
+    /**
+     * 保存一级反馈原因
+     */
+    @RequestMapping(value = "/updateFirstReason",method = RequestMethod.POST)
+    public Object updateFirstReason(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String id=request.getParameter("id").trim();
+        String firstReason=request.getParameter("firstReason").trim();
+        System.out.println("change firstReason to:"+firstReason);
+        //保存到歌曲对象中
+        PublicFile publicFile=new PublicFile();
+        publicFile.setId(Integer.parseInt(id));
+        publicFile.setFirstReason(firstReason);
+        boolean flag=publicFileService.update(publicFile);
+        if(flag){
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"反馈成功");
+            return jsonObject;
+        }
+        jsonObject.put(Consts.CODE,0);
+        jsonObject.put(Consts.MSG,"反馈失败");
         return jsonObject;
     }
 

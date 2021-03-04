@@ -49,6 +49,11 @@ export default new Router({
           path: '/PersonalFile',
           component: resolve => require(['../pages/PersonalFilePage.vue'], resolve)
         }
+        ,
+        {
+          path: '/Refuse',
+          component: resolve => require(['../pages/RefusePage.vue'], resolve)
+        }
       ]
     }
    

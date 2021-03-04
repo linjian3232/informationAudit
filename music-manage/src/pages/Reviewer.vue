@@ -3,14 +3,14 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
-                <el-input v-model="select_word" placeholder="请输入歌手名" class="handle-input" size="mini"></el-input>
-                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌手</el-button>
+                <el-input v-model="select_word" placeholder="请输入上传者名" class="handle-input" size="mini"></el-input>
+                <el-button type="primary" size="mini" @click="goToPublic">我也要发布</el-button>
                 
             </div>
         </div>
         <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
             <el-table-column type="selection" widt="40"></el-table-column>
-            <el-table-column label="歌手图片" width="110" align="center">
+            <el-table-column label="上传者图片" width="110" align="center">
                 <template slot-scope="scope">
                     <div class="uploader-img">
                         <img :src="getUrl(scope.row.pic)" style="width:100%"/>  
@@ -21,36 +21,31 @@
                     </el-upload>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="歌手" width="120" align="center"></el-table-column>
-            <el-table-column label="性别" width="50" align="center">
+            <el-table-column prop="name" label="上传者" width="120" align="center"></el-table-column>
+            <el-table-column prop="studyNumber" label="学号/工号" width="200" align="center"></el-table-column>
+            <el-table-column label="性别" width="150" align="center">
                 <template slot-scope="scope">
                     {{ changeGender(scope.row.gender) }}
                 </template>
             </el-table-column>
-            <el-table-column label="生日" width="120" align="center">
-                 <template slot-scope="scope">
-                    {{ attachBirth(scope.row.birth) }}
-                </template>
-            </el-table-column>
-            <el-table-column prop="location" label="地区" width="100" align="center"></el-table-column>
-            <el-table-column label="简介">
+            <el-table-column prop="academy" label="所属学院" width="250" align="center"></el-table-column>
+            <el-table-column prop="major" label="所属专业" width="350" align="center"></el-table-column>
+           <el-table-column label="审核管理" width="330" align="center">
                 <template slot-scope="scope">
-                <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
+                <el-button  size="mini" @click="reviewEdit(scope.row.id,scope.row.name)" class="update_button">已通过文件</el-button>
+              
+                <el-button  size="mini" @click="unReviewEdit(scope.row.id,scope.row.name)" class="update_button">待审核文件</el-button>
+            
+                <el-button  size="mini" @click="refuseEdit(scope.row.id,scope.row.name)" class="update_button">已驳回文件</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label="歌曲管理" width="110" align="center">
-                <template slot-scope="scope">
-                <el-button  size="mini" @click="reviewEdit(scope.row.id,scope.row.name)" class="update_button">已审核文件</el-button>
-                <br/>
-                <el-button  size="mini" @click="songEdit(scope.row.id,scope.row.name)" class="update_button">待审核文件</el-button>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" width="150" align="center">
+            <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button class="delete_button" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
+
         </el-table>
         <div class="pagination">
             <el-pagination
@@ -62,11 +57,14 @@
             @current-change="handleCurrentChange"></el-pagination>
         </div>
 
-        <!-- 添加歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="添加歌手" :visible.sync="centerDialogVisible" width="400px" center>           
+        <!-- 添加上传者时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="添加上传者" :visible.sync="centerDialogVisible" width="400px" center>           
             <el-form :model="registerForm" ref="registerForm" label-width="80px">
-                <el-form-item prop="name" label="歌手名" size="mini">
-                    <el-input v-model="registerForm.name" placeholder="歌手名"></el-input>
+                <el-form-item prop="name" label="上传者名" size="mini">
+                    <el-input v-model="registerForm.name" placeholder="上传者名"></el-input>
+                </el-form-item>
+                <el-form-item prop="studyNumber" label="学号/工号" size="mini">
+                    <el-input v-model="registerForm.studyNumber" placeholder="学号/工号"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" size="mini">
                     <el-radio-group v-model="registerForm.gender">
@@ -76,14 +74,11 @@
                         <el-radio :label="3">不明</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item prop="birth" label="生日" size="mini">
-                    <el-date-picker type="date" v-model="registerForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
+                 <el-form-item prop="academy" label="所属学院" size="mini">
+                    <el-input v-model="registerForm.academy" placeholder="所属学院"></el-input>
                 </el-form-item>
-                 <el-form-item prop="location" label="地区" size="mini">
-                    <el-input v-model="registerForm.location" placeholder="地区"></el-input>
-                </el-form-item>
-                 <el-form-item prop="introduction" label="简介" size="mini">
-                    <el-input v-model="registerForm.introduction" placeholder="简介" type="textarea"></el-input>
+                 <el-form-item prop="major" label="所属专业" size="mini">
+                    <el-input v-model="registerForm.major" placeholder="所属专业"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -92,11 +87,14 @@
             </span>
         </el-dialog>
 
-        <!-- 修改歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="编辑歌手" :visible.sync="editVisible" width="400px" center>           
+        <!-- 修改上传者时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="编辑上传者" :visible.sync="editVisible" width="400px" center>           
             <el-form :model="editForm" ref="editForm" label-width="80px">
-                <el-form-item prop="name" label="歌手名" size="mini">
-                    <el-input v-model="editForm.name" placeholder="歌手名"></el-input>
+                <el-form-item prop="name" label="上传者名" size="mini">
+                    <el-input v-model="editForm.name" placeholder="上传者名"></el-input>
+                </el-form-item>
+                 <el-form-item prop="studyNumber" label="学号/工号" size="mini">
+                    <el-input v-model="editForm.studyNumber" placeholder="学号/工号"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" size="mini">
                     <el-radio-group v-model="editForm.gender">
@@ -106,14 +104,12 @@
                         <el-radio :label="3">不明</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="生日" size="mini">
-                    <el-date-picker type="date" v-model="editForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
+                <el-form-item prop="academy" label="所属学院" size="mini">
+                    <el-input v-model="editForm.academy" placeholder="所属学院"></el-input>
                 </el-form-item>
-                 <el-form-item prop="location" label="地区" size="mini">
-                    <el-input v-model="editForm.location" placeholder="地区"></el-input>
-                </el-form-item>
-                 <el-form-item prop="introduction" label="简介" size="mini">
-                    <el-input v-model="editForm.introduction" placeholder="简介" type="textarea"></el-input>
+
+                <el-form-item prop="major" label="所属专业" size="mini">
+                    <el-input v-model="editForm.major" placeholder="所属专业"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -122,9 +118,9 @@
             </span>
         </el-dialog>
 
-        <!-- 删除歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="删除歌手" :visible.sync="delVisible" width="300px" center>           
-            <div aligen="center">删除歌手后不可恢复，是否确认删除？</div>
+        <!-- 删除上传者时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="删除上传者" :visible.sync="delVisible" width="300px" center>           
+            <div aligen="center">删除上传者后不可恢复，是否确认删除？</div>
             <span slot="footer">
                 <el-button size="mini" @click=" delVisible = false">取消</el-button>
                 <el-button size="mini" @click="deleteRow">确定</el-button>
@@ -140,23 +136,25 @@ export default {
     mixins:[mixin],
     data(){
         return{
-            centerDialogVisible:false,//添加歌手弹窗的显示状态
-            editVisible:false,//编辑歌手弹窗的显示状态
-            delVisible:false,//删除歌手弹窗的显示状态
+            centerDialogVisible:false,//添加上传者弹窗的显示状态
+            editVisible:false,//编辑上传者弹窗的显示状态
+            delVisible:false,//删除上传者弹窗的显示状态
+            username: '',
+            userLevel:'',
             registerForm:{ //添加框
                 name:'',
+                studyNumber:'',
                 gender:'',
-                birth: '',
-                location: '',
-                introduction: ''
+                academy:'',
+                major:''
             },
             editForm:{ //编辑框
                 id: '',
                 name:'',
+                studyNumber:'',
                 gender:'',
-                birth: '',
-                location: '',
-                introduction: ''
+                academy:'',
+                major:''
             },
             tableData: [],
             tempData: [],
@@ -190,6 +188,9 @@ export default {
        }
    },
     created(){
+        this.username =  localStorage.getItem('userName');
+        this.userLevel = localStorage.getItem('level');
+        console.log("created:"+this.username+"   level:"+this.userLevel)
         this.getData();
     },
 
@@ -197,8 +198,9 @@ export default {
         handleCurrentChange(val){
             this.currentPage=val;
         },
-        //查询所有歌手
+        //查询所有上传者
         getData(){
+            
             this.tempData = [];
             this.tableData = [];
             getAllUploader().then(res => {
@@ -206,17 +208,18 @@ export default {
                 this.tableData=res;
                 this.currentPage=1;
             })
+            console.log("登录者"+this.username);
         },
         addUploader(){
-            let d=this.registerForm.birth;
-            let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+
             let params=new URLSearchParams();
             params.append('name',this.registerForm.name);
+            params.append('studyNumber',this.registerForm.studyNumber);
             params.append('gender',this.registerForm.gender);
+            params.append('academy',this.registerForm.academy);
+            params.append('major',this.registerForm.major);
             params.append('pic','/img/uploaderPic/default.jpg');
-            params.append('birth',datetime);
-            params.append('location',this.registerForm.location);
-            params.append('introduction',this.registerForm.introduction);
+      
 
             setUploader(params)
             .then(res =>{
@@ -233,28 +236,32 @@ export default {
             this.centerDialogVisible=false;
         },
         handleEdit(row){
+            if(this.userLevel!='3'&&this.username!=row.studyNumber){
+                this.notify("您无此权限","error");
+            }
+            else{
             this.editVisible=true;
             this.editForm = {
                 id: row.id,
                 name:row.name,
+                studyNumber:row.studyNumber,
                 gender:row.gender,
-                birth: row.birth,
-                location: row.location,
-                introduction: row.introduction
+                academy:row.academy
+            }
             }
         },
 
-        //编辑保存歌手信息
+        //编辑保存上传者信息
         editSave(){
             let d= new Date(this.editForm.birth);
             let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
             let params=new URLSearchParams();
             params.append('id' , this.editForm.id);
             params.append('name',this.editForm.name);
+            params.append('studyNumber',this.editForm.studyNumber);
             params.append('gender',this.editForm.gender);
-            params.append('birth',datetime);
-            params.append('location',this.editForm.location);
-            params.append('introduction',this.editForm.introduction);
+            params.append('academy',this.editForm.academy);
+            params.append('major',this.editForm.major);
             updateUploader(params)
             .then(res =>{
                 if(res.code == 1)              {
@@ -274,7 +281,27 @@ export default {
             return `${this.$store.state.HOST}/uploader/updateUploaderPic?id=${id}`
         },
 
-        // 删除某个歌手
+        //跳转已阅文件页面
+        reviewEdit(id,name)
+        {
+            this.$router.push({path:`/Review`,query:{id,name}});
+        },
+
+        unReviewEdit(id,name)
+        {
+            this.$router.push({path:`/Unreview`,query:{id,name}});
+        },
+
+        goToPublic(){
+            this.$router.push("/Uploader");
+            this.notify("欢迎来到上传者界面","success");
+        },
+
+        refuseEdit(id,name)
+        {
+            this.$router.push({path:`/Refuse`,query:{id,name}});
+        },
+        // 删除某个上传者
         deleteRow(){
              deleteUploader(this.idx)
             .then(res =>{
@@ -290,14 +317,17 @@ export default {
             })
             this.delVisible=false;
         },
-        reviewEdit(id,name)
+        songEdit(id,studyNumber,name)
         {
-            this.$router.push({path:`/review`,query:{id,name}});
-        },
+            console.log(studyNumber+"    "+this.username);
+            if(this.username==studyNumber||this.userLevel=='3'){
+            this.$router.push({path:`/PersonalFile`,query:{id,name}});
+            this.notify("文件管理页面","success");
 
-        unReviewEdit(id,name)
-        {
-            this.$router.push({path:`/Unreview`,query:{id,name}});
+            }
+            else{
+                 this.notify("权限不足","error");
+            }
         }
     }
 }

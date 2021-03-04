@@ -59,7 +59,7 @@
                     <el-input v-model="registerForm.name" placeholder="上传者名"></el-input>
                 </el-form-item>
                 <el-form-item prop="studyNumber" label="学号/工号" size="mini">
-                    <el-input v-model="registerForm.studyNumber" placeholder="学号/工号"></el-input>
+                    <el-input v-model="registerForm.studyNumber" readonly="true" placeholder="学号/工号"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" size="mini">
                     <el-radio-group v-model="registerForm.gender">
@@ -138,7 +138,7 @@ export default {
             userLevel:'',
             registerForm:{ //添加框
                 name:'',
-                studyNumber:'',
+                studyNumber: localStorage.getItem('userName'),
                 gender:'',
                 academy:'',
                 major:''
@@ -146,7 +146,7 @@ export default {
             editForm:{ //编辑框
                 id: '',
                 name:'',
-                studyNumber:'',
+                studyNumber:localStorage.getItem('userName'),
                 gender:'',
                 academy:'',
                 major:''
