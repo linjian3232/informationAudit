@@ -30,7 +30,7 @@ export default new Router({
           component: resolve => require(['../pages/UnreviewPage.vue'], resolve)
         },
         {
-          path: '/review',
+          path: '/Review',
           component: resolve => require(['../pages/ReviewPage.vue'], resolve)
         },
         {

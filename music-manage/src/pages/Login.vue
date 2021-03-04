@@ -49,19 +49,22 @@ export default {
         if(res.code == 1){
           // vue提供的一个缓存机制，类似一个map
           localStorage.setItem('userName',this.ruleForm.username)
-          this.$router.push({path:`/uploader`,query:{username}});
+          localStorage.setItem('level','1')
+          this.$router.push("/Uploader");
           this.notify("登录成功"+"\n"+"上传者界面","success");
         }
          if(res.code == 2){
           // vue提供的一个缓存机制，类似一个map
           localStorage.setItem('userName',this.ruleForm.username)
-        this.$router.push({path:`/reviewer`,query:{username}});
+          localStorage.setItem('level','2')
+          this.$router.push("/Reviewer");
           this.notify("登录成功"+"\n"+"一级审核者界面:","success");
         }
          if(res.code == 3){
           // vue提供的一个缓存机制，类似一个map
           localStorage.setItem('userName',this.ruleForm.username)
-        this.$router.push({path:`/info`,query:{username}});
+          localStorage.setItem('level','3')
+          this.$router.push("/Teminator");
           this.notify("登录成功"+"\n"+"二级审核者界面","success");
         }
         else if(res.code==0){

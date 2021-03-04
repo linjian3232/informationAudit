@@ -32,7 +32,7 @@
             <el-table-column prop="major" label="所属专业" width="350" align="center"></el-table-column>
             <el-table-column label="文件管理" width="180" align="center">
                 <template slot-scope="scope">
-                <el-button  size="mini" @click="songEdit(scope.row.id,scope.row.name)">文件管理</el-button>
+                <el-button  size="mini" @click="songEdit(scope.row.id,scope.row.studyNumber,scope.row.name)">文件管理</el-button>
                 </template>
             </el-table-column>
             <el-table-column label="操作"  align="center">
@@ -135,6 +135,7 @@ export default {
             editVisible:false,//编辑上传者弹窗的显示状态
             delVisible:false,//删除上传者弹窗的显示状态
             username: '',
+            userLevel:'',
             registerForm:{ //添加框
                 name:'',
                 studyNumber:'',
@@ -183,7 +184,8 @@ export default {
    },
     created(){
         this.username =  localStorage.getItem('userName');
-        console.log("created:"+this.$route.query.username)
+        this.userLevel = localStorage.getItem('level');
+        console.log("created:"+this.username+"   level:"+this.userLevel)
         this.getData();
     },
 
@@ -229,6 +231,10 @@ export default {
             this.centerDialogVisible=false;
         },
         handleEdit(row){
+            if(this.userLevel!='3'&&this.username!=row.studyNumber){
+                this.notify("您无此权限","error");
+            }
+            else{
             this.editVisible=true;
             this.editForm = {
                 id: row.id,
@@ -236,6 +242,7 @@ export default {
                 studyNumber:row.studyNumber,
                 gender:row.gender,
                 academy:row.academy
+            }
             }
         },
 
@@ -285,10 +292,10 @@ export default {
             })
             this.delVisible=false;
         },
-        songEdit(id,name)
+        songEdit(id,studyNumber,name)
         {
-            console.log(name+"    "+this.username);
-            if(this.username==name){
+            console.log(studyNumber+"    "+this.username);
+            if(this.username==studyNumber||this.userLevel=='3'){
             this.$router.push({path:`/PersonalFile`,query:{id,name}});
             this.notify("文件管理页面","success");
 

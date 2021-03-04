@@ -22,10 +22,10 @@
             <el-table-column label="发布预期日期" align="center" width="250">
                 <template slot-scope="scope">
                     <div >
-                        <p>开始：{{scope.row.beginDate}}</p>
+                        <p>开始：{{attachBirth(scope.row.beginDate)}}</p>
                     </div>
                     <div >
-                        <p>结束：{{scope.row.endDate}}</p>
+                        <p>结束：{{attachBirth(scope.row.endDate)}}</p>
                     </div>
                 </template>
             </el-table-column>
@@ -35,7 +35,7 @@
                         <p>开始：{{scope.row.beginTime}}</p>
                     </div>
                     <div >
-                        <p>结束：{{scope.row.beginTime}}</p>
+                        <p>结束：{{scope.row.endTime}}</p>
                     </div>
                 </template>
             </el-table-column>
@@ -110,7 +110,7 @@
         </el-dialog>
 
         <el-dialog title="修改发布文件信息" :visible.sync="editVisible" width="400px" center>
-            <el-form :model="form" ref="form" label-width="80px">
+            <el-form :model="form" ref="form" label-width="120px">
                 <el-form-item prop="name" label="上传者-文件名" size="mini">
                     <el-input v-model="form.name" placeholder="上传者-歌名"></el-input>
                 </el-form-item>                
@@ -118,10 +118,11 @@
                     <el-input v-model="form.introduction" placeholder="文件发布原因"></el-input>
                 </el-form-item>  
                  <el-form-item prop="beginDate" label="预期发布开始日" size="mini">
-                    <el-date-picker type="date" v-model="form.beginDate" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-input type="date" v-model="form.beginDate" placeholder="选择日期" style="width:100%"></el-input>
                 </el-form-item>
                  <el-form-item prop="endDate" label="预期发布结束日" size="mini">
-                    <el-date-picker type="date" v-model="form.endDate" placeholder="选择日期" style="width:100%"></el-date-picker>
+                    <el-date-picker type="date" v-model="form.endDate" placeholder="选择日期" style="width:100%" value-format="yyyy-MM-dd" 
+format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
                 <el-form-item prop="beginTime" label="日开始时间" size="mini">
                     <el-input v-model="form.beginTime" placeholder="开始时间"></el-input>
@@ -269,15 +270,24 @@ export default {
                 id: row.id,
                 name: row.name,
                 introduction: row.introduction,
+                beginDate: row.beginDate,
+                endDate: row.endDate,
+                beginTime: row.beginTime,
+                endTime:row.endTime
             }
         },
         //保存编辑页面修改的数据
         editSave(){
             let params = new URLSearchParams();
+            // let begin=attachBirth(this.form.beginDate);
+            // console.log(begin);
             params.append('id',this.form.id);
             params.append('name',this.form.name);
             params.append('introduction',this.form.introduction);
-
+            params.append('beginDate',this.form.beginDate);
+            params.append('endDate',this.form.endDate);
+            params.append('beginTime',this.form.beginTime);
+            params.append('endTime',this.form.endTime);
             updatePublicFile(params)
             .then(res => {
                 if(res.code == 1){

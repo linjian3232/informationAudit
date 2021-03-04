@@ -50,6 +50,7 @@ public class PublicFileController {
         String secondReason="暂无";
         DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         Date startDate= new Date();Date finalDate=new Date();
+        System.out.println(beginDate);
         try {
             startDate = dateFormat.parse(beginDate);
             finalDate = dateFormat.parse(endDate);
@@ -114,7 +115,6 @@ public class PublicFileController {
     public Object publicFileOfUploaderId(HttpServletRequest request){
         String uploaderId= request.getParameter("uploaderId");
         List<PublicFile> list=publicFileService.publicFileOfUploaderId(Integer.parseInt(uploaderId));
-        System.out.println(list.get(0).getSecondReason());
         return publicFileService.publicFileOfUploaderId(Integer.parseInt(uploaderId));
     }
 
@@ -131,12 +131,32 @@ public class PublicFileController {
         JSONObject jsonObject=new JSONObject();
         String id=request.getParameter("id").trim();
         String introduction=request.getParameter("introduction").trim();
+        String beginDate=request.getParameter("beginDate").trim();
+        String endDate=request.getParameter("endDate").trim();
+        String beginTime=request.getParameter("beginTime").trim();
+        String endTime=request.getParameter("endTime").trim();
         String name=request.getParameter("name").trim();
+
+        System.out.println("update:"+beginDate);
         //保存到歌曲对象中
+        System.out.println(endDate);
+        DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate= new Date();Date finalDate=new Date();
+        try {
+            startDate = dateFormat.parse(beginDate);
+            finalDate = dateFormat.parse(endDate);
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+        }
         PublicFile publicFile=new PublicFile();
         publicFile.setId(Integer.parseInt(id));
         publicFile.setName(name);
         publicFile.setIntroduction(introduction);
+        publicFile.setBeginDate(startDate);
+        publicFile.setEndDate(finalDate);
+        publicFile.setBeginTime(beginTime);
+        publicFile.setEndTime(endTime);
         boolean flag=publicFileService.update(publicFile);
         if(flag){
             jsonObject.put(Consts.CODE,1);
