@@ -1,6 +1,7 @@
 <template>
     <div class="sidebar">
         <el-menu
+            style="width:150px"
             class="sidebar-el-menu"
             :default-active="onRoutes"
             :collapse="collapse"
@@ -28,7 +29,7 @@ export default {
     data() {
         return{
             // 收缩状态，此处为不收缩
-            collapse: false,
+            collapse: true,
             items:[
                 {
                     icon: 'el-icon-document',
@@ -93,11 +94,12 @@ export default {
 
 /* not(el-menu--collapse)的意义在于只有当collapse（折叠状态为false的时候）才采用该css样式 */
 .sidebar-el-menu:not(.el-menu--collapse){
-    width: 250px;
+    width: 0px;
 }
 
 /* 解决因为v-for产生列表多出一截空白 */
 .sidebar >ul {
     height: 100%;
 }
+
 </style>

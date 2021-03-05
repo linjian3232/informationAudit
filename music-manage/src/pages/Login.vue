@@ -68,7 +68,7 @@ export default {
           this.notify("登录成功"+"\n"+"二级审核者界面","success");
         }
         else if(res.code==0){
-          this.notify("登录失败","error");
+          this.notify(res.msg,"error");
         }
       });
   }

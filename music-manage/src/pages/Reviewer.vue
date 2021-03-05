@@ -30,7 +30,7 @@
             </el-table-column>
             <el-table-column prop="academy" label="所属学院" width="250" align="center"></el-table-column>
             <el-table-column prop="major" label="所属专业" width="350" align="center"></el-table-column>
-           <el-table-column label="审核管理" width="330" align="center">
+           <el-table-column label="审核管理"  align="center">
                 <template slot-scope="scope">
                 <el-button  size="mini" @click="reviewEdit(scope.row.id,scope.row.name)" class="update_button">已通过文件</el-button>
               

@@ -18,7 +18,12 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public int verifyPassword(String username, String password) {
+    public int verifyPasswords(String username, String password) {
         return adminMapper.verifyPassword(username,password);
+    }
+
+    @Override
+    public int ifExist(String username, String password) {
+        return adminMapper.ifExist(username,password);
     }
 }

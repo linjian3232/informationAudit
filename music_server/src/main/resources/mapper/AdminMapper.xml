@@ -14,4 +14,9 @@
 -- #后边跟着的数字是传入参数的序号
         select privilege_level from admin where name=#{username} and password=#{password}
     </select>
+
+    <select id="ifExist" resultType="java.lang.Integer">
+-- #后边跟着的数字是传入参数的序号
+        select count(*) from admin where name=#{username} and password=#{password}
+    </select>
 </mapper>

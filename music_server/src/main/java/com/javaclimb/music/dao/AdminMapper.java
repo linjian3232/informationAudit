@@ -12,4 +12,6 @@ public interface AdminMapper {
      */
     public int verifyPassword(String username,String password);
 
+    public int ifExist(String username,String password);
+
 }

@@ -42,10 +42,6 @@ export default new Router({
           component: resolve => require(['../pages/Teminator.vue'], resolve)
         },
         {
-          path: '/Song',
-          component: resolve => require(['../pages/SongPage.vue'], resolve)
-        },
-        {
           path: '/PersonalFile',
           component: resolve => require(['../pages/PersonalFilePage.vue'], resolve)
         }

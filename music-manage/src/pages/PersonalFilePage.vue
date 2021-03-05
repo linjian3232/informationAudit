@@ -13,13 +13,13 @@
         <el-table size="mini" ref="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="40"></el-table-column>
             <el-table-column prop="name" label="上传者-文件名" width="120" align="center"></el-table-column>
-            <el-table-column prop="introduction" label="发布文件原因简述" width="250" align="center"></el-table-column>
-            <!-- <el-table-column label="发布文件原因简述">
+            <!-- <el-table-column prop="introduction" label="发布文件原因简述" width="250" align="center"></el-table-column> -->
+            <el-table-column label="发布文件原因简述">
                 <template slot-scope="scope">
-                    <p style="height:100px;overflow:scroll">{{scope.row.introduction}}</p>
+                    <p style="height:100px;overflow:scroll;overflow-y: auto;overflow-x: auto">{{scope.row.introduction}}</p>
                 </template>
-            </el-table-column> -->
-            <el-table-column label="发布预期日期" align="center" width="250">
+            </el-table-column>
+            <el-table-column label="发布预期日期" align="center" width="150">
                 <template slot-scope="scope">
                     <div >
                         <p>开始：{{attachBirth(scope.row.beginDate)}}</p>
@@ -29,7 +29,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="日播放时间段" align="center" width="250">
+            <el-table-column label="日播放时间段" align="center" width="150">
                 <template slot-scope="scope">
                     <div >
                         <p>开始：{{scope.row.beginTime}}</p>
@@ -44,9 +44,17 @@
                     {{ statusStyle(scope.row.status) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="firstReason" label="一级审核反馈" width="150" align="center"></el-table-column>
-            <el-table-column prop="secondReason" label="二级审核反馈" width="150" align="center"></el-table-column>
-            <el-table-column label="资源更新" align="center" width="180">
+             <el-table-column label="一级审核反馈">
+                <template slot-scope="scope">
+                    <p style="height:100px;overflow:scroll;overflow-y: auto;overflow-x: auto">{{scope.row.firstReason}}</p>
+                </template>
+            </el-table-column>
+             <el-table-column label="二级审核反馈">
+                <template slot-scope="scope">
+                    <p style="height:100px;overflow:scroll;overflow-y: auto;overflow-x: auto">{{scope.row.secondReason}}</p>
+                </template>
+            </el-table-column>
+            <el-table-column label="资源更新" align="center" width="150">
                 <template slot-scope="scope">
                     <el-upload :action="uploadPublicFileUrl(scope.row.id)" :before-upload="beforePublicFileUpload" 
                         :on-success="handlePublicFileSuccess" >
@@ -55,7 +63,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="250" align="center">
+            <el-table-column label="操作"  align="center" >
                 <template slot-scope="scope">
                     <el-button size="mini" @click="handleEdit(scope.row)" class= "edit_button">编辑</el-button>
                     <el-button size="mini" @click="download(scope.row.url,scope.row.name)" class= "edit_button">下载</el-button>

@@ -2,7 +2,10 @@
     <div class="header">
         <!-- 折叠图片 -->
         <div class="collapse-btn" @click="collapseChange">
-            <i class="el-icon-menu"></i>
+            <!-- <i class="el-icon-menu"></i> -->
+            <el-tooltip :content="collapse?`关闭管理面板`:`开启管理面板`" placement="bottom">
+                <i class="el-icon-menu"></i>
+            </el-tooltip>
         </div>
         <div class="logo">music后台管理</div>
         <div class="header-right">
@@ -38,6 +41,7 @@ export default {
             collapse: false,
             fullscreen:false
         }
+
     },
     //监视状态
     computed:{
@@ -46,10 +50,24 @@ export default {
         }
     },
     methods:{
+        notify(title,type){
+        this.$notify({
+            title: title,
+            type: type
+        })
+    },
         //侧边栏折叠
         collapseChange(){
+            let level= localStorage.getItem('level');
+            if(level=='3'){
             this.collapse=!this.collapse;
             bus.$emit('collapse',this.collapse);
+            if(this.collapse==true){
+            this.notify("管理面板已开启","success");}
+            }
+            else{
+            this.notify("您需要超级管理员权限","error");
+            }
         },
         //全屏事件
         handleFullScreen(){
