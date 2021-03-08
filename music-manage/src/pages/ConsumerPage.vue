@@ -3,41 +3,21 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
-                <el-input v-model="select_word" placeholder="请输入歌手名" class="handle-input" size="mini"></el-input>
-                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加用户</el-button>
-                
+                <el-input v-model="select_word" placeholder="请输入上传者名" class="handle-input" size="mini"></el-input>
+                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加上传者</el-button>
+            <div class="scan-box">
+                <el-button type="primary" size="mini" @click="getDataOfLevel(1)">查看上传者</el-button>
+                <el-button type="primary" size="mini" @click="getDataOfLevel(2)">查看一级审核者</el-button>
+                <el-button type="primary" size="mini" @click="getDataOfLevel(3)">查看二级审核者</el-button>
+            </div>
             </div>
         </div>
         <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
             <el-table-column type="selection" widt="40"></el-table-column>
-            <el-table-column label="用户图片" width="110" align="center">
-                <template slot-scope="scope">
-                    <div class="consumer-img">
-                        <img :src="getUrl(scope.row.avator)" style="width:100%"/>  
-                    </div>
-                    <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatorUpload" 
-		    :on-success="handleAvatorSuccess">
-                        <el-button size="mini">更新头像</el-button>
-                    </el-upload>
-                </template>
-            </el-table-column>
-            <el-table-column prop="username" label="用户名" width="120" align="center"></el-table-column>
-            <el-table-column label="性别" width="50" align="center">
-                <template slot-scope="scope">
-                    {{ changeGender(scope.row.gender) }}
-                </template>
-            </el-table-column>
-            <el-table-column prop="phoneNumber" label="手机号" width="120" align="center"></el-table-column>
-            <el-table-column prop="email" label="邮箱" width="240" align="center"></el-table-column>
-
-            <el-table-column label="生日" width="120" align="center">
-                 <template slot-scope="scope">
-                    {{ attachBirth(scope.row.birth) }}
-                </template>
-            </el-table-column>
-            <el-table-column prop="introduction" label="签名" align="center"></el-table-column>
-            <el-table-column prop="location" label="地区" width="100" align="center"></el-table-column>
-            <el-table-column label="操作" width="150" align="center">
+            <el-table-column prop="name" label="用户名" width="400" align="center"></el-table-column>
+            <el-table-column prop="password" label="密码" width="400" align="center"></el-table-column>
+            <el-table-column prop="privilegeLevel" label="权限等级" width="400" align="center"></el-table-column>
+            <el-table-column label="操作"  align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button class="delete_button" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
@@ -54,73 +34,48 @@
             @current-change="handleCurrentChange"></el-pagination>
         </div>
 
-        <!-- 添加歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="添加新用户" :visible.sync="centerDialogVisible" width="400px" center>           
+        <!-- 添加上传者时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="添加管理员" :visible.sync="centerDialogVisible" width="400px" center>           
             <el-form :model="registerForm" ref="registerForm" label-width="80px">
-                <el-form-item prop="username" label="用户名" size="mini">
-                    <el-input v-model="registerForm.username" placeholder="用户名"></el-input>
+                <el-form-item prop="name" label="管理员用户名" size="mini">
+                    <el-input v-model="registerForm.name" placeholder="上传者名"></el-input>
                 </el-form-item>
-                <el-form-item prop="password" label="密码" size="mini">
-                    <el-input type="password" v-model="registerForm.password" placeholder="密码"></el-input>
+                <el-form-item prop="password" label="管理员密码" size="mini">
+                    <el-input v-model="registerForm.password" placeholder="上传者名"></el-input>
                 </el-form-item>
-                <el-form-item label="性别" size="mini">
-                    <el-radio-group v-model="registerForm.gender">
-                        <el-radio :label="0">女</el-radio>
-                        <el-radio :label="1">男</el-radio>
-                    </el-radio-group>
+                <el-form-item prop="privilegeLevel" label="管理员等级" size="mini">
+                    <el-input v-model="registerForm.password" placeholder="上传者名"></el-input>
                 </el-form-item>
-                <el-form-item prop="phoneNumber" label="手机号" size="mini">
-                    <el-input v-model="registerForm.phoneNumber" placeholder="手机号"></el-input>
-                </el-form-item>
-                <el-form-item prop="email" label="用户名" size="mini">
-                    <el-input v-model="registerForm.email" placeholder="邮箱"></el-input>
-                </el-form-item>
-                <el-form-item prop="birth" label="生日" size="mini">
-                    <el-date-picker type="date" v-model="registerForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
-                </el-form-item>
-                <el-form-item prop="introduction" label="签名" size="mini">
-                    <el-input v-model="registerForm.introduction" placeholder="签名"></el-input>
-                </el-form-item>
-                 <el-form-item prop="location" label="地区" size="mini">
-                    <el-input v-model="registerForm.location" placeholder="地区"></el-input>
-                </el-form-item>
-                 
             </el-form>
             <span slot="footer">
                 <el-button size="mini" @click="centerDialogVisible = false">取消</el-button>
-                <el-button size="mini" @click="addConsumer">确定</el-button>
+                <el-button size="mini" @click="beforeAddUploader(registerForm.studyNumber)">确定</el-button>
             </span>
         </el-dialog>
 
-        <!-- 修改歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="修改用户" :visible.sync="editVisible" width="400px" center>           
+        <!-- 修改上传者时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="编辑上传者" :visible.sync="editVisible" width="400px" center>           
             <el-form :model="editForm" ref="editForm" label-width="80px">
-                 <el-form-item prop="username" label="用户名" size="mini">
-                    <el-input v-model="editForm.username" placeholder="用户名"></el-input>
+                <el-form-item prop="name" label="上传者名" size="mini">
+                    <el-input v-model="editForm.name" placeholder="上传者名"></el-input>
                 </el-form-item>
-                <el-form-item prop="password" label="密码" size="mini">
-                    <el-input type="password" v-model="editForm.password" placeholder="密码"></el-input>
+                 <el-form-item prop="studyNumber" label="学号/工号" size="mini">
+                    <el-input v-model="editForm.studyNumber" placeholder="学号/工号"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" size="mini">
                     <el-radio-group v-model="editForm.gender">
                         <el-radio :label="0">女</el-radio>
                         <el-radio :label="1">男</el-radio>
+                        <el-radio :label="2">组合</el-radio>
+                        <el-radio :label="3">不明</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item prop="phoneNumber" label="手机号" size="mini">
-                    <el-input v-model="editForm.phoneNumber" placeholder="手机号"></el-input>
+                <el-form-item prop="academy" label="所属学院" size="mini">
+                    <el-input v-model="editForm.academy" placeholder="所属学院"></el-input>
                 </el-form-item>
-                <el-form-item prop="email" label="用户名" size="mini">
-                    <el-input v-model="editForm.email" placeholder="邮箱"></el-input>
-                </el-form-item>
-                <el-form-item prop="birth" label="生日" size="mini">
-                    <el-date-picker type="date" v-model="editForm.birth" placeholder="选择日期" style="width:100%"></el-date-picker>
-                </el-form-item>
-                <el-form-item prop="introduction" label="签名" size="mini">
-                    <el-input v-model="editForm.introduction" placeholder="签名"></el-input>
-                </el-form-item>
-                 <el-form-item prop="location" label="地区" size="mini">
-                    <el-input v-model="editForm.location" placeholder="地区"></el-input>
+
+                <el-form-item prop="major" label="所属专业" size="mini">
+                    <el-input v-model="editForm.major" placeholder="所属专业"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -129,9 +84,9 @@
             </span>
         </el-dialog>
 
-        <!-- 删除歌手时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="删除用户" :visible.sync="delVisible" width="300px" center>           
-            <div aligen="center">删除歌手后不可恢复，是否确认删除？</div>
+        <!-- 删除上传者时弹出窗口 visible表示是否可见 -->     
+        <el-dialog title="删除上传者" :visible.sync="delVisible" width="300px" center>           
+            <div aligen="center">删除上传者后不可恢复，是否确认删除？</div>
             <span slot="footer">
                 <el-button size="mini" @click=" delVisible = false">取消</el-button>
                 <el-button size="mini" @click="deleteRow">确定</el-button>
@@ -141,41 +96,32 @@
 </template>
 
 <script>
-import {getAllConsumer,setConsumer,updateConsumer,deleteConsumer} from '../api/index';
+import {setUploader,getAllUploader,updateUploader,deleteUploader,uploaderOfStudyNumber,getUserOfLevel,getAllAdmin} from '../api/index';
 import {mixin} from '../mixins/index';
 export default {
     mixins:[mixin],
     data(){
         return{
-            centerDialogVisible:false,//添加歌手弹窗的显示状态
-            editVisible:false,//编辑歌手弹窗的显示状态
-            delVisible:false,//删除歌手弹窗的显示状态
+            centerDialogVisible:false,//添加上传者弹窗的显示状态
+            editVisible:false,//编辑上传者弹窗的显示状态
+            delVisible:false,//删除上传者弹窗的显示状态
+            username: '',
+            userLevel:'',
             registerForm:{ //添加框
-                username:'',
-                password:'',
-                gender:'',
-                phoneNumber:'',
-                email:'',
-                birth: '',
-                introduction: '',
-                location: ''
-                
+                name:'',
+                password: '',
+                privilegeLevel:''
             },
             editForm:{ //编辑框
                 id: '',
-                username:'',
-                password:'',
-                gender:'',
-                phoneNumber:'',
-                email:'',
-                birth: '',
-                introduction: '',
-                location: ''
+                name:'',
+                password: '',
+                privilegeLevel:''
             },
             tableData: [],
             tempData: [],
             select_word: '',
-            pageSize: 5,
+            pageSize: 15,
             currentPage: 1,
             idx: -1,
             multipleSelection:[]
@@ -196,7 +142,7 @@ export default {
            }else{
                this.tableData=[];
                for(let item of this.tempData){
-                   if(item.username.includes(this.select_word)){
+                   if(item.name.includes(this.select_word)){
                        this.tableData.push(item);
                    }
                }
@@ -204,6 +150,9 @@ export default {
        }
    },
     created(){
+        this.username =  localStorage.getItem('userName');
+        this.userLevel = localStorage.getItem('level');
+        console.log("created:"+this.username+"   level:"+this.userLevel)
         this.getData();
     },
 
@@ -211,33 +160,50 @@ export default {
         handleCurrentChange(val){
             this.currentPage=val;
         },
-        //查询所有用户
         getData(){
             this.tempData = [];
             this.tableData = [];
-            getAllConsumer().then(res => {
+            getAllAdmin().then(res => {
                 this.tempData=res;
                 this.tableData=res;
                 this.currentPage=1;
             })
         },
+        //查询所有上传者
+        getDataOfLevel(flag){
+            
+            this.tempData = [];
+            this.tableData = [];
+            getUserOfLevel(flag).then(res => {
+                this.tempData=res;
+                this.tableData=res;
+                this.currentPage=1;
+            })
+            console.log("登录者"+this.username);
+        },
 
-        //添加用户
-        addConsumer(){
-            let d=this.registerForm.birth;
-            let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+        beforeAddUploader(number){
+            uploaderOfStudyNumber(number).then(res =>{
+                if(res.code==1){
+                    this.notify(res.msg,"error");
+                }
+                else{
+                    this.addUploader();
+                }
+            })
+        },
+        addUploader(){
+    
             let params=new URLSearchParams();
-            params.append('username',this.registerForm.name);
-            params.append('password',this.registerForm.password);
+            params.append('name',this.registerForm.name);
+            params.append('studyNumber',this.registerForm.studyNumber);
             params.append('gender',this.registerForm.gender);
-            params.append('phoneNumber',this.registerForm.phoneNumber);
-            params.append('email',this.registerForm.email);
-            params.append('birth',datetime);
-            params.append('introduction',this.registerForm.introduction);
-            params.append('location',this.registerForm.location);
-            params.append('avator','/avatorImg/default.jpg');
+            params.append('academy',this.registerForm.academy);
+            params.append('major',this.registerForm.major);
+            params.append('pic','/img/uploaderPic/default.jpg');
+      
 
-            setConsumer(params)
+            setUploader(params)
             .then(res =>{
                 if(res.code == 1)              {
 	    	        this.getData();	
@@ -252,34 +218,33 @@ export default {
             this.centerDialogVisible=false;
         },
         handleEdit(row){
+            if(this.userLevel!='3'&&this.username!=row.studyNumber){
+                this.notify("您无此权限","error");
+            }
+            else{
             this.editVisible=true;
             this.editForm = {
                 id: row.id,
-                username:row.username,
-                password:row.password,
+                name:row.name,
+                studyNumber:row.studyNumber,
                 gender:row.gender,
-                phoneNumber:row.phoneNumber,
-                email:row.email,
-                birth: row.birth,
-                introduction:row.introduction,
-                location: row.location
+                academy:row.academy
+            }
             }
         },
 
-        //编辑保存歌手信息
+        //编辑保存上传者信息
         editSave(){
             let d= new Date(this.editForm.birth);
             let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
             let params=new URLSearchParams();
-             params.append('username',this.editForm.name);
-            params.append('password',this.editForm.password);
+            params.append('id' , this.editForm.id);
+            params.append('name',this.editForm.name);
+            params.append('studyNumber',this.editForm.studyNumber);
             params.append('gender',this.editForm.gender);
-            params.append('phoneNumber',this.editForm.phoneNumber);
-            params.append('email',this.editForm.email);
-            params.append('birth',datetime);
-            params.append('introduction',this.editForm.introduction);
-            params.append('location',this.editForm.location);
-            updateConsumer(params)
+            params.append('academy',this.editForm.academy);
+            params.append('major',this.editForm.major);
+            updateUploader(params)
             .then(res =>{
                 if(res.code == 1)              {
 	    	        this.getData();	
@@ -295,12 +260,12 @@ export default {
         },
         //更新图片
         uploadUrl(id){
-            return `${this.$store.state.HOST}/consumer/updateConsumerPic?id=${id}`
+            return `${this.$store.state.HOST}/uploader/updateUploaderPic?id=${id}`
         },
 
-        // 删除某个歌手
+        // 删除某个上传者
         deleteRow(){
-             deleteConsumer(this.idx)
+             deleteUploader(this.idx)
             .then(res =>{
                 if(res)              {
 	    	        this.getData();	
@@ -314,6 +279,18 @@ export default {
             })
             this.delVisible=false;
         },
+        songEdit(id,studyNumber,name)
+        {
+            console.log(studyNumber+"    "+this.username);
+            if(this.username==studyNumber||this.userLevel=='3'){
+            this.$router.push({path:`/PersonalFile`,query:{id,name}});
+            this.notify("文件管理页面","success");
+
+            }
+            else{
+                 this.notify("权限不足","error");
+            }
+        }
     }
 }
 </script>
@@ -322,7 +299,12 @@ export default {
     .handle-box{
         margin-bottom: 20px;
     }
-    .consumer-img{
+    .scan-box{
+        margin-bottom: 20px;
+        float:right;
+        padding-right: 50px;
+    }
+    .uploader-img{
         width:100%;
         height: 80px;
         /* 添加圆弧 */

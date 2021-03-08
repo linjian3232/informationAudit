@@ -1,6 +1,8 @@
 package com.javaclimb.music.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.javaclimb.music.domain.Admin;
+import com.javaclimb.music.domain.Uploader;
 import com.javaclimb.music.service.AdminService;
 import com.javaclimb.music.util.Consts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 public class AdminController {
@@ -41,5 +44,25 @@ public class AdminController {
             return jsonObject;
         }
 
+    }
+    /**
+     * 根据权限等级查询
+     */
+    @RequestMapping(value="/admin/level",method = RequestMethod.GET)
+    public Object adminOfLevel(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String level=request.getParameter("privilegeLevel").trim();
+        List<Admin> list=adminService.getAllReviewer(Integer.parseInt(level));
+        return list;
+    }
+
+    /**
+     * 根据权限等级查询
+     */
+    @RequestMapping(value="/admin/all",method = RequestMethod.GET)
+    public Object allAdmin(HttpServletRequest request){
+
+        List<Admin> list=adminService.getAllAdmin();
+        return list;
     }
 }

@@ -3,7 +3,8 @@ import {get,post} from "./http";
 
 //判断管理员是否登录成功
 export const getLoginStatus = (params) => post(`admin/login/status`,params);
-
+export const getUserOfLevel = (privilegeLevel) => get(`/admin/level?privilegeLevel=${privilegeLevel}`);
+export const getAllAdmin = () => get(`/admin/all`);
 //====================上传者相关=======================
 
 //查询歌手

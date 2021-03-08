@@ -1,6 +1,9 @@
 package com.javaclimb.music.dao;
 
+import com.javaclimb.music.domain.Admin;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 管理员Dao
@@ -14,4 +17,6 @@ public interface AdminMapper {
 
     public int ifExist(String username,String password);
 
+    public List<Admin> getAllReviewer(Integer level);
+    public List<Admin> getAllAdmin();
 }

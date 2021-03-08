@@ -1,9 +1,12 @@
 package com.javaclimb.music.service.Impl;
 
 import com.javaclimb.music.dao.AdminMapper;
+import com.javaclimb.music.domain.Admin;
 import com.javaclimb.music.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 管理员sevice实现类 */
@@ -25,5 +28,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public int ifExist(String username, String password) {
         return adminMapper.ifExist(username,password);
+    }
+
+    @Override
+    public List<Admin> getAllReviewer(Integer level) {
+        return adminMapper.getAllReviewer(level);
+    }
+
+    @Override
+    public List<Admin> getAllAdmin() {
+        return adminMapper.getAllAdmin();
     }
 }
