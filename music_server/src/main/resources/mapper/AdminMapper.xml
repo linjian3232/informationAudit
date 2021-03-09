@@ -12,6 +12,60 @@
     <sql id="Base_Column_List">
         id,name,password,privilege_level
     </sql>
+
+    <insert id="insert" parameterType="com.javaclimb.music.domain.Admin">
+        insert into admin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="privilegeLevel != null">
+                privilege_level,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="password != null">
+                #{password},
+            </if>
+            <if test="privilegeLevel != null">
+                #{privilegeLevel},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.javaclimb.music.domain.Admin">
+        update admin
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="privilegeLevel != null">
+                privilege_level = #{privilegeLevel},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from admin
+        where id=#{id}
+    </delete>
+
     <select id="verifyPassword" resultType="java.lang.Integer">
 -- #后边跟着的数字是传入参数的序号
         select privilege_level from admin where name=#{username} and password=#{password}
@@ -28,6 +82,14 @@
         <include refid="Base_Column_List"/>
         from admin
         where privilege_level=#{privilegeLevel}
+    </select>
+
+    <select id="adminOfName"  resultMap="BaseResultMap" parameterType="java.lang.String">
+        -- #后边跟着的数字是传入参数的序号
+        select
+        <include refid="Base_Column_List"/>
+        from admin
+        where name=#{name}
     </select>
 
     <select id="getAllAdmin"  resultMap="BaseResultMap" parameterType="java.lang.Integer">

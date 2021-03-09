@@ -67,6 +67,13 @@ export default {
           this.$router.push("/Teminator");
           this.notify("登录成功"+"\n"+"二级审核者界面","success");
         }
+        if(res.code == 4){
+          // vue提供的一个缓存机制，类似一个map
+          localStorage.setItem('userName',this.ruleForm.username)
+          localStorage.setItem('level','4')
+          this.$router.push("/Consumer");
+          this.notify("登录成功"+"\n"+"超级管理员界面","success");
+        }
         else if(res.code==0){
           this.notify(res.msg,"error");
         }

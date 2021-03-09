@@ -5,6 +5,12 @@ import {get,post} from "./http";
 export const getLoginStatus = (params) => post(`admin/login/status`,params);
 export const getUserOfLevel = (privilegeLevel) => get(`/admin/level?privilegeLevel=${privilegeLevel}`);
 export const getAllAdmin = () => get(`/admin/all`);
+//添加管理员
+export const addAdmin= (params) => post(`admin/add`,params);
+export const updateAdmin= (params) => post(`admin/update`,params);
+//删除管理员
+export const deleteAdmin = (id) => get(`admin/delete?id=${id}`);
+export const adminOfName = (name) => get(`/admin/verifyExist?name=${name}`);
 //====================上传者相关=======================
 
 //查询歌手

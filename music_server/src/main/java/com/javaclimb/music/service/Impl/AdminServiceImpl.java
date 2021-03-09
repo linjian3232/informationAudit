@@ -39,4 +39,24 @@ public class AdminServiceImpl implements AdminService {
     public List<Admin> getAllAdmin() {
         return adminMapper.getAllAdmin();
     }
+
+    @Override
+    public boolean insert(Admin admin) {
+        return adminMapper.insert(admin)>0;
+    }
+
+    @Override
+    public boolean update(Admin admin) {
+        return adminMapper.update(admin)>0;
+    }
+
+    @Override
+    public boolean delete(Integer id) {
+        return adminMapper.delete(id)>0;
+    }
+
+    @Override
+    public List<Admin> adminOfName(String name) {
+        return adminMapper.adminOfName(name);
+    }
 }

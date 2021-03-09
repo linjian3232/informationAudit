@@ -65,4 +65,79 @@ public class AdminController {
         List<Admin> list=adminService.getAllAdmin();
         return list;
     }
+
+    @RequestMapping(value = "/admin/add",method = RequestMethod.POST)
+    public Object addAdmin(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String name=request.getParameter("name").trim();
+        String password=request.getParameter("password").trim();
+        String privilegeLevel=request.getParameter("privilegeLevel").trim();
+
+        //保存到上传者对象中
+       Admin admin=new Admin();
+        admin.setName(name);
+        admin.setPassword(password);
+        admin.setPrivilegeLevel(Integer.parseInt(privilegeLevel));
+        boolean flag=adminService.insert(admin);
+        if(flag){
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"添加用户成功");
+            return jsonObject;
+        }
+        jsonObject.put(Consts.CODE,0);
+        jsonObject.put(Consts.MSG,"添加用户失败");
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "/admin/update",method = RequestMethod.POST)
+    public Object updateAdmin(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String id=request.getParameter("id").trim();
+        String name=request.getParameter("name").trim();
+        String password=request.getParameter("password").trim();
+        String privilegeLevel=request.getParameter("privilegeLevel").trim();
+        //保存到上传者对象中
+        Admin admin=new Admin();
+        admin.setId(Integer.parseInt(id));
+        admin.setName(name);
+        admin.setPassword(password);
+        admin.setPrivilegeLevel(Integer.parseInt(privilegeLevel));
+        boolean flag=adminService.update(admin);
+        if(flag){
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"修改用户成功");
+            return jsonObject;
+        }
+        jsonObject.put(Consts.CODE,0);
+        jsonObject.put(Consts.MSG,"修改用户失败");
+        return jsonObject;
+    }
+
+    /**
+     * 删除一个管理员
+     * @param request
+     * @return
+     */
+    @RequestMapping(value= "/admin/delete",method = RequestMethod.GET)
+    public Object deleteUploader(HttpServletRequest request){
+        String id=request.getParameter("id").trim();
+        boolean flag=adminService.delete(Integer.parseInt(id));
+        return flag;
+    }
+
+    @RequestMapping(value="/admin/verifyExist",method = RequestMethod.GET)
+    public Object uploaderOfStudyNumber(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String name=request.getParameter("name").trim();
+        List<Admin>list=adminService.adminOfName(name);
+        if(list.size()==0){
+            jsonObject.put(Consts.CODE,0);
+            jsonObject.put(Consts.MSG,"无此用户");
+        }
+        else {
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"用户已存在");
+        }
+        return jsonObject;
+    }
 }

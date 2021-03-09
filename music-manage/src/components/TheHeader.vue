@@ -59,7 +59,7 @@ export default {
         //侧边栏折叠
         collapseChange(){
             let level= localStorage.getItem('level');
-            if(level=='3'){
+            if(level=='4'){
             this.collapse=!this.collapse;
             bus.$emit('collapse',this.collapse);
             if(this.collapse==true){

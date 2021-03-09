@@ -32,7 +32,7 @@
             <el-table-column prop="major" label="所属专业" width="350" align="center"></el-table-column>
             <el-table-column label="文件管理" width="180" align="center">
                 <template slot-scope="scope">
-                <el-button  size="mini" @click="songEdit(scope.row.id,scope.row.studyNumber,scope.row.name)">文件管理</el-button>
+                <el-button  size="mini" @click="fileEdit(scope.row.id,scope.row.studyNumber,scope.row.name)">文件管理</el-button>
                 </template>
             </el-table-column>
             <el-table-column label="操作"  align="center">
@@ -303,10 +303,10 @@ export default {
             })
             this.delVisible=false;
         },
-        songEdit(id,studyNumber,name)
+        fileEdit(id,studyNumber,name)
         {
             console.log(studyNumber+"    "+this.username);
-            if(this.username==studyNumber||this.userLevel=='3'){
+            if(this.username==studyNumber||this.userLevel=='4'){
             this.$router.push({path:`/PersonalFile`,query:{id,name}});
             this.notify("文件管理页面","success");
 

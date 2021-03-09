@@ -19,4 +19,8 @@ public interface AdminMapper {
 
     public List<Admin> getAllReviewer(Integer level);
     public List<Admin> getAllAdmin();
+    public int insert(Admin admin);
+    public int update(Admin admin);
+    public int delete(Integer id);
+    public List<Admin> adminOfName(String name);
 }

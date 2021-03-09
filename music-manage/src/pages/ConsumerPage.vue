@@ -4,7 +4,7 @@
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
                 <el-input v-model="select_word" placeholder="请输入上传者名" class="handle-input" size="mini"></el-input>
-                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加上传者</el-button>
+                <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加管理员</el-button>
             <div class="scan-box">
                 <el-button type="primary" size="mini" @click="getDataOfLevel(1)">查看上传者</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(2)">查看一级审核者</el-button>
@@ -16,7 +16,11 @@
             <el-table-column type="selection" widt="40"></el-table-column>
             <el-table-column prop="name" label="用户名" width="400" align="center"></el-table-column>
             <el-table-column prop="password" label="密码" width="400" align="center"></el-table-column>
-            <el-table-column prop="privilegeLevel" label="权限等级" width="400" align="center"></el-table-column>
+            <el-table-column label="权限等级" width="250" align="center">
+                <template slot-scope="scope">
+                    {{ changeLevel(scope.row.privilegeLevel) }}
+                </template>
+            </el-table-column>
             <el-table-column label="操作"  align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -35,47 +39,45 @@
         </div>
 
         <!-- 添加上传者时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="添加管理员" :visible.sync="centerDialogVisible" width="400px" center>           
-            <el-form :model="registerForm" ref="registerForm" label-width="80px">
+        <el-dialog title="添加管理员" :visible.sync="centerDialogVisible" width="600px" center>           
+            <el-form :model="registerForm" ref="registerForm" label-width="100px">
                 <el-form-item prop="name" label="管理员用户名" size="mini">
-                    <el-input v-model="registerForm.name" placeholder="上传者名"></el-input>
+                    <el-input v-model="registerForm.name" placeholder="用户名"></el-input>
                 </el-form-item>
                 <el-form-item prop="password" label="管理员密码" size="mini">
-                    <el-input v-model="registerForm.password" placeholder="上传者名"></el-input>
+                    <el-input v-model="registerForm.password" placeholder="密码"></el-input>
                 </el-form-item>
-                <el-form-item prop="privilegeLevel" label="管理员等级" size="mini">
-                    <el-input v-model="registerForm.password" placeholder="上传者名"></el-input>
+                <el-form-item label="权限级别" size="mini">
+                    <el-radio-group v-model="registerForm.privilegeLevel">
+                        <el-radio :label="1">上传者</el-radio>
+                        <el-radio :label="2">一级审核者</el-radio>
+                        <el-radio :label="3">二级审核者</el-radio>
+                        <el-radio :label="4">超级管理员</el-radio>
+                    </el-radio-group>
                 </el-form-item>
             </el-form>
             <span slot="footer">
                 <el-button size="mini" @click="centerDialogVisible = false">取消</el-button>
-                <el-button size="mini" @click="beforeAddUploader(registerForm.studyNumber)">确定</el-button>
+                <el-button size="mini" @click="beforeAddAdmin(registerForm.name)">确定</el-button>
             </span>
         </el-dialog>
 
         <!-- 修改上传者时弹出窗口 visible表示是否可见 -->     
-        <el-dialog title="编辑上传者" :visible.sync="editVisible" width="400px" center>           
-            <el-form :model="editForm" ref="editForm" label-width="80px">
-                <el-form-item prop="name" label="上传者名" size="mini">
-                    <el-input v-model="editForm.name" placeholder="上传者名"></el-input>
+        <el-dialog title="编辑上传者" :visible.sync="editVisible" width="600px" center>           
+            <el-form :model="editForm" ref="editForm" label-width="100px">
+               <el-form-item prop="name" label="管理员用户名" size="mini">
+                    <el-input v-model="editForm.name" placeholder="用户名"></el-input>
                 </el-form-item>
-                 <el-form-item prop="studyNumber" label="学号/工号" size="mini">
-                    <el-input v-model="editForm.studyNumber" placeholder="学号/工号"></el-input>
+                <el-form-item prop="password" label="管理员密码" size="mini">
+                    <el-input v-model="editForm.password" placeholder="密码"></el-input>
                 </el-form-item>
-                <el-form-item label="性别" size="mini">
-                    <el-radio-group v-model="editForm.gender">
-                        <el-radio :label="0">女</el-radio>
-                        <el-radio :label="1">男</el-radio>
-                        <el-radio :label="2">组合</el-radio>
-                        <el-radio :label="3">不明</el-radio>
+                <el-form-item label="权限级别" size="mini">
+                    <el-radio-group v-model="editForm.privilegeLevel">
+                        <el-radio :label="1">上传者</el-radio>
+                        <el-radio :label="2">一级审核者</el-radio>
+                        <el-radio :label="3">二级审核者</el-radio>
+                        <el-radio :label="4">超级管理员</el-radio>
                     </el-radio-group>
-                </el-form-item>
-                <el-form-item prop="academy" label="所属学院" size="mini">
-                    <el-input v-model="editForm.academy" placeholder="所属学院"></el-input>
-                </el-form-item>
-
-                <el-form-item prop="major" label="所属专业" size="mini">
-                    <el-input v-model="editForm.major" placeholder="所属专业"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -96,7 +98,7 @@
 </template>
 
 <script>
-import {setUploader,getAllUploader,updateUploader,deleteUploader,uploaderOfStudyNumber,getUserOfLevel,getAllAdmin} from '../api/index';
+import {setUploader,getAllUploader,updateUploader,deleteUploader,uploaderOfStudyNumber,getUserOfLevel,getAllAdmin,adminOfName,addAdmin,updateAdmin,deleteAdmin} from '../api/index';
 import {mixin} from '../mixins/index';
 export default {
     mixins:[mixin],
@@ -182,28 +184,24 @@ export default {
             console.log("登录者"+this.username);
         },
 
-        beforeAddUploader(number){
-            uploaderOfStudyNumber(number).then(res =>{
+        beforeAddAdmin(name){
+            adminOfName(name).then(res =>{
                 if(res.code==1){
                     this.notify(res.msg,"error");
                 }
                 else{
-                    this.addUploader();
+                    this.addNewAdmin();
                 }
             })
         },
-        addUploader(){
+        addNewAdmin(){
     
             let params=new URLSearchParams();
             params.append('name',this.registerForm.name);
-            params.append('studyNumber',this.registerForm.studyNumber);
-            params.append('gender',this.registerForm.gender);
-            params.append('academy',this.registerForm.academy);
-            params.append('major',this.registerForm.major);
-            params.append('pic','/img/uploaderPic/default.jpg');
+            params.append('password',this.registerForm.password);
+            params.append('privilegeLevel',this.registerForm.privilegeLevel);
       
-
-            setUploader(params)
+            addAdmin(params)
             .then(res =>{
                 if(res.code == 1)              {
 	    	        this.getData();	
@@ -218,39 +216,30 @@ export default {
             this.centerDialogVisible=false;
         },
         handleEdit(row){
-            if(this.userLevel!='3'&&this.username!=row.studyNumber){
-                this.notify("您无此权限","error");
-            }
-            else{
             this.editVisible=true;
             this.editForm = {
                 id: row.id,
                 name:row.name,
-                studyNumber:row.studyNumber,
-                gender:row.gender,
-                academy:row.academy
+                password:row.password,
+                privilegeLevel:row.privilegeLevel,
             }
-            }
+        
         },
 
         //编辑保存上传者信息
         editSave(){
-            let d= new Date(this.editForm.birth);
-            let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
             let params=new URLSearchParams();
             params.append('id' , this.editForm.id);
             params.append('name',this.editForm.name);
-            params.append('studyNumber',this.editForm.studyNumber);
-            params.append('gender',this.editForm.gender);
-            params.append('academy',this.editForm.academy);
-            params.append('major',this.editForm.major);
-            updateUploader(params)
+            params.append('password',this.editForm.password);
+            params.append('privilegeLevel',this.editForm.privilegeLevel);
+            updateAdmin(params)
             .then(res =>{
                 if(res.code == 1)              {
 	    	        this.getData();	
                     this.notify("修改成功","success");
                 }else{
-                    this.notify("修改失败","error");
+                    this.notify(res.msg,"error");
                 }
             })
             .catch(err => {
@@ -258,14 +247,9 @@ export default {
             })
             this.editVisible=false;
         },
-        //更新图片
-        uploadUrl(id){
-            return `${this.$store.state.HOST}/uploader/updateUploaderPic?id=${id}`
-        },
-
         // 删除某个上传者
         deleteRow(){
-             deleteUploader(this.idx)
+             deleteAdmin(this.idx)
             .then(res =>{
                 if(res)              {
 	    	        this.getData();	

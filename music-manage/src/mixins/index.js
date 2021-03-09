@@ -29,6 +29,23 @@ export const mixin = {
         return value;
     },
 
+    // 获取性别中文
+    changeLevel(value){
+        if(value == '1'){
+            return "上传者";
+        }
+        if(value == '2'){
+            return "一级审核者";
+        }
+        if(value == '3'){
+            return "二级审核者";
+        }
+        if(value == '4'){
+            return "超级管理员";
+        }
+        return value;
+    },
+
      // 获取审核状态中文
      statusStyle(value){
         if(value == '0'){
