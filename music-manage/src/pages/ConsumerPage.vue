@@ -8,12 +8,27 @@
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
                 <el-input v-model="select_word" placeholder="请输入上传者名" class="handle-input" size="mini"></el-input>
                 <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加管理员</el-button>
-            <div class="scan-box">
+            <!-- <div class="scan-box">
                  <el-button type="primary" size="mini" @click="getData">查看全部</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(1)">查看上传者</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(2)">查看一级审核者</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(3)">查看二级审核者</el-button>
-            </div>
+            </div> -->
+
+             <el-dropdown class="scan-box" trigger ="click" @command="handleCommand">
+                <el-button class="el-dropdown-link" style="background-color:#f6f5ec">
+                    查看
+                    <i class="el-icon-caret-bottom"></i>
+                </el-button>
+               
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="getAll">查看全部</el-dropdown-item>
+                    <el-dropdown-item command="getFirst">查看上传者</el-dropdown-item>
+                    <el-dropdown-item command="getSecond">查看一级审核者</el-dropdown-item>
+                    <el-dropdown-item command="getThird">查看二级审核者</el-dropdown-item>
+                    <el-dropdown-item command="getSuper">查看超级管理员</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
             </div>
         </div>
         <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
@@ -163,6 +178,28 @@ export default {
     },
 
     methods:{
+         handleCommand(command){
+            if(command=="getAll"){
+                // 退出登录清除缓存
+               this.getData();
+            }
+            if(command=="getFirst"){
+                // 退出登录清除缓存
+               this.getDataOfLevel(1);
+            }
+            if(command=="getSecond"){
+                // 退出登录清除缓存
+               this.getDataOfLevel(2);
+            }
+            if(command=="getThird"){
+                // 退出登录清除缓存
+               this.getDataOfLevel(3);
+            }
+            if(command=="getSuper"){
+                // 退出登录清除缓存
+               this.getDataOfLevel(4);
+            }
+        },
         handleCurrentChange(val){
             this.currentPage=val;
         },
@@ -284,13 +321,15 @@ export default {
 </script>
 
 <style scoped>
+.user-name{
+    margin-left:10px;
+}
     .handle-box{
         margin-bottom: 20px;
     }
     .scan-box{
-        margin-bottom: 20px;
-        float:right;
-        padding-right: 50px;
+        margin-left:90%;
+        
     }
     .uploader-img{
         width:100%;
