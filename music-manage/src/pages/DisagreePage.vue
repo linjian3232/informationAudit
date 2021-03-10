@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="crumbs">
-            <i class="el-icon-tickets"></i>发布文件信息
+            <i class="el-icon-tickets"></i>二级审核驳回文件
         </div>
         <div class="container">
             <div class="handle-box">
@@ -64,71 +64,11 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="添加发布文件" :visible.sync="centerDialogVisible" width="400px" center>
-            <el-form :model="registerForm" ref="registerForm" label-width="120px" action="" id="tf"> 
-                <div>
-                    <label>文件发布原因</label>
-                    <el-input type="text" name="introduction"></el-input>
-                </div>
-                <div>
-                    <label>预期发布开始日</label>
-                    <el-input type="date" name="beginDate"></el-input>
-                </div>
-                <div>
-                    <label>预期发布结束日</label>
-                    <el-input type="date" name="endDate"></el-input>
-                </div>       
-                <div>
-                    <label>日开始时间</label>
-                    <el-input type="text" name="beginTime"></el-input>
-                </div>    
-                <div>
-                    <label>日结束时间</label>
-                    <el-input type="text" name="endTime"></el-input>
-                </div>        
-        
-                <div>
-                    <label>文件上传</label>
-                    <input type="file" name="file">
-                </div>
-            </el-form>
-            <span slot="footer">
-                <el-button size="mini" @click="centerDialogVisible = false">取消</el-button>
-                <el-button size="mini" @click="addPublicFile">确定</el-button>                
-            </span>
-        </el-dialog>
 
-        <el-dialog title="修改发布文件信息" :visible.sync="editVisible" width="400px" center>
-            <el-form :model="form" ref="form" label-width="120px">
-                <el-form-item prop="name" label="上传者-文件名" size="mini">
-                    <el-input v-model="form.name" placeholder="上传者-歌名"></el-input>
-                </el-form-item>                
-                <el-form-item prop="introduction" label="文件发布原因" size="mini">
-                    <el-input v-model="form.introduction" placeholder="文件发布原因"></el-input>
-                </el-form-item>  
-                 <el-form-item prop="beginDate" label="预期发布开始日" size="mini">
-                    <el-input type="date" v-model="form.beginDate" placeholder="选择日期" style="width:100%"></el-input>
-                </el-form-item>
-                 <el-form-item prop="endDate" label="预期发布结束日" size="mini">
-                    <el-date-picker type="date" v-model="form.endDate" placeholder="选择日期" style="width:100%" value-format="yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
-                </el-form-item>
-                <el-form-item prop="beginTime" label="日开始时间" size="mini">
-                    <el-input v-model="form.beginTime" placeholder="开始时间"></el-input>
-                </el-form-item> 
-                <el-form-item prop="endTime" label="日结束时间" size="mini">
-                    <el-input v-model="form.endTime" placeholder="结束时间"></el-input>
-                </el-form-item> 
-                
-            </el-form>
-            <span slot="footer">
-                <el-button size="mini" @click="editVisible = false">取消</el-button>
-                <el-button size="mini" @click="editSave">确定</el-button>                
-            </span>
-        </el-dialog>
          <el-dialog title="驳回原因" :visible.sync="refuseVisible" width="300px" center>
              <el-form :model="refuseForm" ref="form" label-width="120px">
-                  <el-form-item prop="firstReason" label="驳回原因" size="mini">
-                    <el-input v-model="refuseForm.firstReason" placeholder="驳回原因"></el-input>
+                  <el-form-item prop="secondReason" label="驳回原因" size="mini">
+                    <el-input v-model="refuseForm.secondReason" placeholder="驳回原因"></el-input>
                 </el-form-item>       
              </el-form>
             <span slot="footer">
@@ -150,7 +90,7 @@
 import { mixin } from '../mixins/index';
 import {mapGetters} from 'vuex';
 import '@/assets/js/iconfont.js';
-import {publicFileOfUploaderId,updatePublicFile,delPublicFile,download,updatePublicFileStatus,publicFileOfStatus,updateFirstReason} from '../api/index';
+import {publicFileOfUploaderId,updatePublicFile,delPublicFile,download,updatePublicFileStatus,publicFileOfStatus,updateFirstReason,updateSecondReason} from '../api/index';
 
 
 export default {
@@ -182,7 +122,7 @@ export default {
             },
              refuseForm:{
                 id:'',
-                firstReason:''
+                secondReason:''
             },
             tableData: [],
             tempData: [],
@@ -313,15 +253,15 @@ export default {
         },
 
         refuseSave(){
-            this.changeStatus(this.refuseForm.id,-1);
             
             let params = new URLSearchParams();
             params.append('id',this.refuseForm.id);
-            params.append('firstReason',this.refuseForm.firstReason);
-            updateFirstReason(params)
+            params.append('secondReason',this.refuseForm.secondReason);
+            updateSecondReason(params)
             .then(res => {
                 if(res.code == 1){
                     this.getData();
+                    this.notify("修改成功","error");
                 }else{
                     this.notify("修改失败","error");
                 }

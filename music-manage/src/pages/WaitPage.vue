@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="crumbs">
-            <i class="el-icon-tickets"></i>发布文件信息
+            <i class="el-icon-tickets"></i>二级待审核文件
         </div>
         <div class="container">
             <div class="handle-box">
@@ -138,8 +138,8 @@ format="yyyy-MM-dd"></el-date-picker>
 
          <el-dialog title="驳回原因" :visible.sync="refuseVisible" width="300px" center>
              <el-form :model="refuseForm" ref="form" label-width="120px">
-                  <el-form-item prop="firstReason" label="驳回原因" size="mini">
-                    <el-input v-model="refuseForm.firstReason" placeholder="驳回原因"></el-input>
+                  <el-form-item prop="secondReason" label="驳回原因" size="mini">
+                    <el-input v-model="refuseForm.secondReason" placeholder="驳回原因"></el-input>
                 </el-form-item>       
              </el-form>
             <span slot="footer">
@@ -161,7 +161,7 @@ format="yyyy-MM-dd"></el-date-picker>
 import { mixin } from '../mixins/index';
 import {mapGetters} from 'vuex';
 import '@/assets/js/iconfont.js';
-import {publicFileOfUploaderId,updatePublicFile,delPublicFile,download,updatePublicFileStatus,publicFileOfStatus,updateFirstReason} from '../api/index';
+import {publicFileOfUploaderId,updatePublicFile,delPublicFile,download,updatePublicFileStatus,publicFileOfStatus,updateFirstReason,updateSecondReason} from '../api/index';
 
 
 export default {
@@ -193,7 +193,7 @@ export default {
             },
             refuseForm:{
                 id:'',
-                firstReason:''
+                secondReason:''
             },
             tableData: [],
             tempData: [],
@@ -322,12 +322,12 @@ export default {
             this.editVisible = false;
         },
         refuseSave(){
-            this.changeStatus(this.refuseForm.id,-2);
-            
+
+            this.changeStatus(this.refuseForm.id,-2);        
             let params = new URLSearchParams();
             params.append('id',this.refuseForm.id);
-            params.append('firstReason',this.refuseForm.firstReason);
-            updateFirstReason(params)
+            params.append('secondReason',this.refuseForm.secondReason);
+            updateSecondReason(params)
             .then(res => {
                 if(res.code == 1){
                     this.getData();

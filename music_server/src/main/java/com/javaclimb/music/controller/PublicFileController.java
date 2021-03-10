@@ -217,6 +217,31 @@ public class PublicFileController {
         return jsonObject;
     }
 
+    /**
+     * 保存二级反馈原因
+     */
+    @RequestMapping(value = "/updateSecondReason",method = RequestMethod.POST)
+    public Object updateReason(HttpServletRequest request){
+        JSONObject jsonObject=new JSONObject();
+        String id=request.getParameter("id").trim();
+        String secondReason=request.getParameter("secondReason").trim();
+        System.out.println("change secondReason to:"+secondReason);
+        //保存到歌曲对象中
+        PublicFile publicFile=new PublicFile();
+        publicFile.setId(Integer.parseInt(id));
+        publicFile.setSecondReason(secondReason);
+        boolean flag=publicFileService.update(publicFile);
+        if(flag){
+            jsonObject.put(Consts.CODE,1);
+            jsonObject.put(Consts.MSG,"反馈成功");
+            return jsonObject;
+        }
+        jsonObject.put(Consts.CODE,0);
+        jsonObject.put(Consts.MSG,"反馈失败");
+        return jsonObject;
+    }
+
+
 
 
     /**

@@ -1,5 +1,8 @@
 <template>
     <div class="table">
+         <div class="crumbs">
+            二级审核者界面
+        </div>
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
@@ -30,7 +33,7 @@
             </el-table-column>
             <el-table-column prop="academy" label="所属学院" width="250" align="center"></el-table-column>
             <el-table-column prop="major" label="所属专业" width="350" align="center"></el-table-column>
-           <el-table-column label="审核管理" width="330" align="center">
+           <el-table-column label="审核管理" align="center">
                 <template slot-scope="scope">
                 <el-button  size="mini" @click="reviewEdit(scope.row.id,scope.row.name)" class="update_button">已通过文件</el-button>
               
@@ -42,7 +45,7 @@
             <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
 

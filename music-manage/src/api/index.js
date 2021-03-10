@@ -67,6 +67,9 @@ export const updatePublicFileStatus= (params) =>post(`publicFile/updateStatus`,p
 
 //保存一级反馈信息
 export const updateFirstReason= (params) =>post(`publicFile/updateFirstReason`,params);
+
+
+export const updateSecondReason= (params) =>post(`publicFile/updateSecondReason`,params);
 //=====================用户相关==================================
 //查询所有用户
 export const getAllConsumer = () => get(`consumer/allConsumer`);

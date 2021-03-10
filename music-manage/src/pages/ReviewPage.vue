@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="crumbs">
-            发布文件页面
+          <i class="el-icon-tickets"></i> 一级通过文件
         </div>
         <div class="container">
             <div class="handle-box">
@@ -47,7 +47,7 @@
             <el-table-column label="操作" width="250" align="center">
                 <template slot-scope="scope">
                     <el-button size="mini" @click="download(scope.row.url,scope.row.name)" class= "edit_button">下载</el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)" class="delete_button">删除</el-button> 
+                    <el-button size="mini" type="danger" @click="handleDelete(scope.row)" class="delete_button">删除</el-button> 
                 </template>
             </el-table-column>
         </el-table>

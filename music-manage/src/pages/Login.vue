@@ -1,12 +1,12 @@
 <template>
   <div class="login-wrap">
-    <div class="ms-title">music 后台管理登录</div>
+    <div class="ms-title">文件发布系统登录</div>
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-        <el-form-item prop="username">
-          <el-input v-model="ruleForm.username" placeholder="用户名"></el-input>
+        <el-form-item prop="username" label="用户名">
+          <el-input v-model="ruleForm.username" placeholder="用户名" ></el-input>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="ruleForm.password" placeholder="密码"></el-input>
         </el-form-item>
         <div class="login-btn">
@@ -100,7 +100,7 @@ export default {
   text-align: center;
   font-size: 30px;
   font-weight: 600;
-  color: #fff;
+  color: #000;
 }
 
 .ms-login {
@@ -108,7 +108,7 @@ export default {
   left: 50%;
   top: 50%;
   width: 300px;
-  height: 160px;
+  height: 250px;
   /* 左移150 */
   margin-left: -190px;
   margin-top: -150px;

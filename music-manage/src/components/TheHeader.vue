@@ -7,7 +7,7 @@
                 <i class="el-icon-menu"></i>
             </el-tooltip>
         </div>
-        <div class="logo">music后台管理</div>
+        <div class="logo">文件发布系统</div>
         <div class="header-right">
             <div class="btn-fullscreen" @click="handleFullScreen">
                 <el-tooltip :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">

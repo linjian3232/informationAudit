@@ -64,13 +64,14 @@ a {
 
 .crumbs {
   position: relative;
-  background-color: #003a6c;
+  background-color: #b7c1ca;
   box-sizing: border-box;
   width:100%;
   height: 50px;
   font-size: 22px;
-  color:white;
+  color:black;
   text-align: center;
+  line-height: 60px;
 }
 
 .pagination {

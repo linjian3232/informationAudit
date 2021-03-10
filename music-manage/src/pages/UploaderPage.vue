@@ -1,5 +1,8 @@
 <template>
     <div class="table">
+        <div class="crumbs">
+            <i class="el-icon-tickets"></i>上传者界面
+        </div>
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
@@ -38,7 +41,7 @@
             <el-table-column label="操作"  align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -242,7 +245,7 @@ export default {
             this.centerDialogVisible=false;
         },
         handleEdit(row){
-            if(this.userLevel!='3'&&this.username!=row.studyNumber){
+            if(this.userLevel!='4'&&this.username!=row.studyNumber){
                 this.notify("您无此权限","error");
             }
             else{

@@ -1,7 +1,8 @@
 <template>
     <div class="table">
+        
         <div class="crumbs">
-            发布文件页面
+           <i class="el-icon-tickets"></i> 二级审核通过文件
         </div>
         <div class="container">
             <div class="handle-box">

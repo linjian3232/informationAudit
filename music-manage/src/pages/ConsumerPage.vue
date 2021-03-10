@@ -1,11 +1,15 @@
 <template>
     <div class="table">
+         <div class="crumbs">
+            超级管理者界面
+        </div>
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
                 <el-input v-model="select_word" placeholder="请输入上传者名" class="handle-input" size="mini"></el-input>
                 <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加管理员</el-button>
             <div class="scan-box">
+                 <el-button type="primary" size="mini" @click="getData">查看全部</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(1)">查看上传者</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(2)">查看一级审核者</el-button>
                 <el-button type="primary" size="mini" @click="getDataOfLevel(3)">查看二级审核者</el-button>

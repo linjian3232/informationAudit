@@ -101,9 +101,15 @@ export const mixin = {
     },
 
     //删除歌手
-    handleDelete(id){
-        this.idx=id;
+    handleDelete(row){
+        console.log(this.username+"  "+row.studyNumber);
+        if(this.userLevel!='4'&&this.username!=row.studyNumber){
+            this.notify("您权限不足","error");
+        }
+        else{
+        this.idx=row.id;
         this.delVisible=true;
+        }
     },
     //把已经选择的项赋值给multipleSelection
     handleSelectionChange(val){

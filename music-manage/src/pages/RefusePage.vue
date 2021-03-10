@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="crumbs">
-            <i class="el-icon-tickets"></i>发布文件信息
+            <i class="el-icon-tickets"></i>一级驳回文件
         </div>
         <div class="container">
             <div class="handle-box">
