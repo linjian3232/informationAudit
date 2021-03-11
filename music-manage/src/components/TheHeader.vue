@@ -26,6 +26,7 @@
                
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+                    <el-dropdown-item command="personalInfo">个人信息</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -104,6 +105,11 @@ export default {
                 // 退出登录清除缓存
                 localStorage.removeItem('userName');
                 this.$router.push("/");
+            }
+           
+            if(command=="personalInfo"){
+                // 退出登录清除缓存
+                 this.$router.push("/Info");
             }
         }
     }

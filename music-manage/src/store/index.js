@@ -4,10 +4,10 @@ Vue.use(Vuex)
 
 const store =new Vuex.Store({
     state:{
-        HOST: 'http://127.0.0.1:8888',
-        isPlay: false,          //ÊÇ·ñ²¥·ÅÖÐ
-        url: '',                //¸èÇúµØÖ·
-        id: ''                  //¸èÇúid
+        HOST: 'http://192.168.0.107:8888/',
+        isPlay: false,          //ï¿½Ç·ñ²¥·ï¿½ï¿½ï¿½
+        url: '',                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+        id: ''                  //ï¿½ï¿½ï¿½ï¿½id
     },
     getters: {
         isPlay: state => state.isPlay,

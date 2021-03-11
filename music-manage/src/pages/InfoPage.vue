@@ -35,7 +35,7 @@ export default {
   left: 40%;
   top: 30%;
   width: 800px;
-  height: 650px;
+  height: 250px;
   /* 左移150 */
   margin-left: -190px;
   margin-top: -150px;

@@ -306,7 +306,7 @@ export default {
             })
             this.delVisible=false;
         },
-        fileEdit(id,studyNumber,name)
+         fileEdit(id,studyNumber,name)
         {
             console.log(studyNumber+"    "+this.username);
             if(this.username==studyNumber||this.userLevel=='4'){
