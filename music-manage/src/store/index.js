@@ -4,7 +4,7 @@ Vue.use(Vuex)
 
 const store =new Vuex.Store({
     state:{
-        HOST: 'http://192.168.0.107:8888/',
+        HOST: 'http://192.168.1.60:8888/',
         isPlay: false,          //�Ƿ񲥷���
         url: '',                //������ַ
         id: ''                  //����id
