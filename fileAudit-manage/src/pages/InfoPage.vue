@@ -4,12 +4,12 @@
             用户个人信息页           
         </div>
         <div class="info_background">
-            <el-form :model="registerForm" :rules="rules" ref="ruleForm">
+            <el-form :model="registerForm">
                 <el-form-item prop="name" label="用户名">
-                     <el-input v-model="registerForm.name" placeholder="用户名" ></el-input>
+                     <el-input :value="registerForm.name" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="权限等级" width="250" align="center">
-                     <el-input v-model="registerForm.level" placeholder="权限等级" ></el-input>
+                     <el-input :value="changeLevel(registerForm.level)" readonly></el-input>
             </el-form-item>
             </el-form>
         </div>

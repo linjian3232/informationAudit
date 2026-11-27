@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC
         "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.javaclimb.music.dao.PublicFileMapper">
-    <resultMap id="BaseResultMap" type="com.javaclimb.music.domain.PublicFile" >
+<mapper namespace="com.informationaudit.dao.PublicFileMapper">
+    <resultMap id="BaseResultMap" type="com.informationaudit.domain.PublicFile" >
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="uploader_id" jdbcType="INTEGER" property="uploaderId"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
@@ -23,7 +23,7 @@
     <sql id="Base_Column_List">
         id,uploader_id,name,introduction,create_time,update_time,status,first_reason,second_reason,begin_time,end_time,begin_date,end_date,url
     </sql>
-    <insert id="insert" parameterType="com.javaclimb.music.domain.PublicFile">
+    <insert id="insert" parameterType="com.informationaudit.domain.PublicFile">
         insert into file
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -106,7 +106,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.javaclimb.music.domain.PublicFile">
+    <update id="update" parameterType="com.informationaudit.domain.PublicFile">
         update file
         <set>
             <if test="uploaderId != null">

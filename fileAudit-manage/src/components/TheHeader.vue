@@ -7,7 +7,7 @@
                 <i class="el-icon-menu"></i>
             </el-tooltip>
         </div>
-        <div class="logo">文件发布系统</div>
+        <div class="logo">文件发布两级审核系统</div>
         <div class="header-right">
             <div class="btn-fullscreen" @click="handleFullScreen">
                 <el-tooltip :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
@@ -104,6 +104,7 @@ export default {
             if(command=="logout"){
                 // 退出登录清除缓存
                 localStorage.removeItem('userName');
+                localStorage.removeItem('level');
                 this.$router.push("/");
             }
            

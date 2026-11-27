@@ -1,0 +1,11 @@
+/.local/
+/.idea/*
+!/.idea/informationAudit.iml
+/fileAudit-manage/node_modules/
+/fileAudit-manage/dist/
+/fileAudit-manage/coverage/
+/fileAudit-manage/test/unit/coverage/
+/fileAudit_server/target/
+/fileAudit_server/publicFile/
+/fileAudit_server/img/uploaderPic/
+/fileAudit_server/avatorImg/

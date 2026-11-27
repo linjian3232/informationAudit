@@ -1,30 +1,16 @@
-# music-manage
+# 文件发布两级审核系统管理端
 
-> A Vue.js project
+在项目根目录的 README 中按步骤配置数据库并启动后端。本目录保留现有 Vue 2 和 Element UI 项目。
 
-## Build Setup
+## 开发运行
 
-``` bash
-# install dependencies
-npm install
+在本目录运行 `npm run dev`，然后打开 [本地管理端](http://127.0.0.1:8080)。保存源文件后，开发服务器会重新编译，刷新页面即可查看更新。
 
-# serve with hot reload at localhost:8080
-npm run dev
+开发服务器默认把后台接口、上传、下载和头像请求转发到 `http://127.0.0.1:8888`。后端监听地址变更时可设置 `AUDIT_BACKEND_URL`。前端监听地址和端口可分别通过 `HOST` 和 `PORT` 覆盖。
 
-# build for production with minification
-npm run build
+## 打包与验证
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+- `npm run build` 生成 `dist/`。启动后端后可打开 [集成版管理端](http://127.0.0.1:8888)。
+- `npm run unit` 运行管理端单元测试。
+- `npm run e2e` 启动临时开发服务器和模拟后端，验证登录、文件管理页面和接口转发。
+- `npm test` 依次运行单元测试和上述端到端测试。

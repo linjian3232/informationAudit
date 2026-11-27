@@ -1,12 +1,12 @@
 <template>
     <div class="table">
          <div class="crumbs">
-            超级管理者界面
+            用户管理
         </div>
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" size="mini" @click="delAll">批量删除</el-button>
-                <el-input v-model="select_word" placeholder="请输入上传者名" class="handle-input" size="mini"></el-input>
+                <el-input v-model="select_word" placeholder="请输入用户名" class="handle-input" size="mini"></el-input>
                 <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加管理员</el-button>
             <!-- <div class="scan-box">
                  <el-button type="primary" size="mini" @click="getData">查看全部</el-button>
@@ -31,8 +31,8 @@
             </el-dropdown>
             </div>
         </div>
-        <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" widt="40"></el-table-column>
+        <el-table size="mini" ref="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="40"></el-table-column>
             <el-table-column prop="name" label="用户名" width="400" align="center"></el-table-column>
             <el-table-column prop="password" label="密码" width="400" align="center"></el-table-column>
             <el-table-column label="权限等级" width="250" align="center">
@@ -43,7 +43,7 @@
             <el-table-column label="操作"  align="center">
                 <template slot-scope="scope">
                     <el-button class="edit_button" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <el-button class="delete_button" size="mini" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import {setUploader,getAllUploader,updateUploader,deleteUploader,uploaderOfStudyNumber,getUserOfLevel,getAllAdmin,adminOfName,addAdmin,updateAdmin,deleteAdmin} from '../api/index';
+import {getUserOfLevel,getAllAdmin,adminOfName,addAdmin,updateAdmin,deleteAdmin} from '../api/index';
 import {mixin} from '../mixins/index';
 export default {
     mixins:[mixin],
@@ -173,7 +173,6 @@ export default {
     created(){
         this.username =  localStorage.getItem('userName');
         this.userLevel = localStorage.getItem('level');
-        console.log("created:"+this.username+"   level:"+this.userLevel)
         this.getData();
     },
 
@@ -211,6 +210,7 @@ export default {
                 this.tableData=res;
                 this.currentPage=1;
             })
+            .catch(() => this.notify('无法加载列表', 'error'))
         },
         //查询所有上传者
         getDataOfLevel(flag){
@@ -222,7 +222,7 @@ export default {
                 this.tableData=res;
                 this.currentPage=1;
             })
-            console.log("登录者"+this.username);
+            .catch(() => this.notify('无法加载列表', 'error'))
         },
 
         beforeAddAdmin(name){
@@ -251,9 +251,7 @@ export default {
                     this.notify("添加失败","error");
                 }
             })
-            .catch(err => {
-                console.log(err);
-            });
+            .catch(() => this.notify('添加失败', 'error'));
             this.centerDialogVisible=false;
         },
         handleEdit(row){
@@ -283,39 +281,10 @@ export default {
                     this.notify(res.msg,"error");
                 }
             })
-            .catch(err => {
-                console.log(err);
-            })
+            .catch(() => this.notify('修改失败', 'error'));
             this.editVisible=false;
         },
-        // 删除某个上传者
-        deleteRow(){
-             deleteAdmin(this.idx)
-            .then(res =>{
-                if(res)              {
-	    	        this.getData();	
-                    this.notify("删除成功","success");
-                }else{
-                    this.notify("删除失败","error");
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            this.delVisible=false;
-        },
-        songEdit(id,studyNumber,name)
-        {
-            console.log(studyNumber+"    "+this.username);
-            if(this.username==studyNumber||this.userLevel=='3'){
-            this.$router.push({path:`/PersonalFile`,query:{id,name}});
-            this.notify("文件管理页面","success");
-
-            }
-            else{
-                 this.notify("权限不足","error");
-            }
-        }
+        deleteRequest: deleteAdmin
     }
 }
 </script>

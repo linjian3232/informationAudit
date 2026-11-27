@@ -1,8 +1,8 @@
 'use strict'
-// Template version: 1.3.1
-// see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const backendUrl = process.env.AUDIT_BACKEND_URL || 'http://127.0.0.1:8888'
+const backendRoutes = ['/admin', '/uploader', '/publicFile', '/img', '/avatorImg']
 
 module.exports = {
   dev: {
@@ -10,23 +10,20 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: backendRoutes.reduce((routes, route) => {
+      routes[route] = { target: backendUrl, changeOrigin: true }
+      return routes
+    }, {}),
 
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: false,
-    errorOverlay: true,
-    notifyOnErrors: true,
-    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+    host: '127.0.0.1', // can be overwritten by process.env.HOST
+    port: 8080, // can be overwritten by process.env.PORT
+    poll: false,
 
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.
     useEslint: false,
-    // If true, eslint errors and warnings will also be shown in the error overlay
-    // in the browser.
-    showEslintErrorsInOverlay: false,
 
     /**
      * Source Maps

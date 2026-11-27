@@ -11,15 +11,15 @@
                 
             </div>
         </div>
-        <el-table size="mini" reg="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" widt="40"></el-table-column>
+        <el-table size="mini" ref="multipleTable" border style="width:100%" height="680px" :data="data" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="40"></el-table-column>
             <el-table-column label="上传者图片" width="110" align="center">
                 <template slot-scope="scope">
                     <div class="uploader-img">
-                        <img :src="getUrl(scope.row.pic)" style="width:100%"/>  
+                        <img :src="getUrl(scope.row.pic) || '/img/uploaderPic/default.jpg'" style="width:100%"/>
                     </div>
-                    <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatorUpload" 
-		    :on-success="handleAvatorSuccess">
+                    <el-upload :action="uploadUrl(scope.row.id)" :before-upload="beforeAvatarUpload"
+		    :on-success="handleUploadSuccess" :on-error="handleUploadError">
                         <el-button size="mini">更新头像</el-button>
                     </el-upload>
                 </template>
@@ -31,8 +31,8 @@
                     {{ changeGender(scope.row.gender) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="academy" label="所属学院" width="250" align="center"></el-table-column>
-            <el-table-column prop="major" label="所属专业" width="350" align="center"></el-table-column>
+            <el-table-column prop="academy" label="所属学院" width="150" align="center"></el-table-column>
+            <el-table-column prop="major" label="所属专业" width="150" align="center"></el-table-column>
             <el-table-column label="文件管理" width="180" align="center">
                 <template slot-scope="scope">
                 <el-button  size="mini" @click="fileEdit(scope.row.id,scope.row.studyNumber,scope.row.name)">文件管理</el-button>
@@ -68,8 +68,8 @@
                     <el-radio-group v-model="registerForm.gender">
                         <el-radio :label="0">女</el-radio>
                         <el-radio :label="1">男</el-radio>
-                        <el-radio :label="2">组合</el-radio>
-                        <el-radio :label="3">不明</el-radio>
+                        <el-radio :label="2">其他</el-radio>
+                        <el-radio :label="3">未知</el-radio>
                     </el-radio-group>
                 </el-form-item>
                  <el-form-item prop="academy" label="所属学院" size="mini">
@@ -98,8 +98,8 @@
                     <el-radio-group v-model="editForm.gender">
                         <el-radio :label="0">女</el-radio>
                         <el-radio :label="1">男</el-radio>
-                        <el-radio :label="2">组合</el-radio>
-                        <el-radio :label="3">不明</el-radio>
+                        <el-radio :label="2">其他</el-radio>
+                        <el-radio :label="3">未知</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item prop="academy" label="所属学院" size="mini">
@@ -188,7 +188,6 @@ export default {
     created(){
         this.username =  localStorage.getItem('userName');
         this.userLevel = localStorage.getItem('level');
-        console.log("created:"+this.username+"   level:"+this.userLevel)
         this.getData();
     },
 
@@ -206,7 +205,7 @@ export default {
                 this.tableData=res;
                 this.currentPage=1;
             })
-            console.log("登录者"+this.username);
+            .catch(() => this.notify('无法加载列表', 'error'))
         },
 
         beforeAddUploader(number){
@@ -239,9 +238,7 @@ export default {
                     this.notify("添加失败","error");
                 }
             })
-            .catch(err => {
-                console.log(err);
-            });
+            .catch(() => this.notify('添加失败', 'error'));
             this.centerDialogVisible=false;
         },
         handleEdit(row){
@@ -255,15 +252,14 @@ export default {
                 name:row.name,
                 studyNumber:row.studyNumber,
                 gender:row.gender,
-                academy:row.academy
+                academy:row.academy,
+                major:row.major
             }
             }
         },
 
         //编辑保存上传者信息
         editSave(){
-            let d= new Date(this.editForm.birth);
-            let datetime=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
             let params=new URLSearchParams();
             params.append('id' , this.editForm.id);
             params.append('name',this.editForm.name);
@@ -280,35 +276,12 @@ export default {
                     this.notify("修改失败","error");
                 }
             })
-            .catch(err => {
-                console.log(err);
-            })
+            .catch(() => this.notify('修改失败', 'error'));
             this.editVisible=false;
         },
-        //更新图片
-        uploadUrl(id){
-            return `${this.$store.state.HOST}/uploader/updateUploaderPic?id=${id}`
-        },
-
-        // 删除某个上传者
-        deleteRow(){
-             deleteUploader(this.idx)
-            .then(res =>{
-                if(res)              {
-	    	        this.getData();	
-                    this.notify("删除成功","success");
-                }else{
-                    this.notify("删除失败","error");
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            this.delVisible=false;
-        },
+        deleteRequest: deleteUploader,
          fileEdit(id,studyNumber,name)
         {
-            console.log(studyNumber+"    "+this.username);
             if(this.username==studyNumber||this.userLevel=='4'){
             this.$router.push({path:`/PersonalFile`,query:{id,name}});
             this.notify("文件管理页面","success");

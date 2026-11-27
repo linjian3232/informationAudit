@@ -40,7 +40,7 @@ module.exports = function () {
 
   if (warnings.length) {
     console.log('')
-    console.log(chalk.yellow('To use this template, you must update following to modules:'))
+    console.log(chalk.yellow('The frontend requires the following runtime versions:'))
     console.log()
 
     for (let i = 0; i < warnings.length; i++) {

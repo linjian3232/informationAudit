@@ -1,130 +1,98 @@
+import { getFileUrl, uploaderAvatarUrl } from '../api'
+
+const genders = { 0: '女', 1: '男', 2: '其他', 3: '未知' }
+const roles = { 1: '上传者', 2: '一级审核者', 3: '二级审核者', 4: '超级管理员' }
+const statuses = {
+  0: '未审核',
+  1: '一级审核通过',
+  2: '二级审核通过',
+  '-1': '一级审核未通过',
+  '-2': '二级审核未通过'
+}
+
 export const mixin = {
-    methods:{
-    //提示信息
-    notify(title,type){
-        this.$notify({
-            title: title,
-            type: type
-        })
+  methods: {
+    notify (title, type) {
+      this.$notify({ title, type })
     },
-    
-    //根据相对地址获取绝对地址
-    getUrl(url){
-        return `${this.$store.state.HOST}/${url}`
+    getUrl: getFileUrl,
+    uploadUrl: uploaderAvatarUrl,
+    changeGender (value) {
+      return genders[value] || value
     },
-
-    // 获取性别中文
-    changeGender(value){
-        if(value == '0'){
-            return "女";
-        }
-        if(value == '1'){
-            return "男";
-        }
-        if(value == '2'){
-            return "组合";
-        }
-        if(value == '3'){
-            return '不明';
-        }
-        return value;
+    changeLevel (value) {
+      return roles[value] || value
     },
-
-    // 获取性别中文
-    changeLevel(value){
-        if(value == '1'){
-            return "上传者";
-        }
-        if(value == '2'){
-            return "一级审核者";
-        }
-        if(value == '3'){
-            return "二级审核者";
-        }
-        if(value == '4'){
-            return "超级管理员";
-        }
-        return value;
+    statusStyle (value) {
+      return statuses[value] || value
     },
-
-     // 获取审核状态中文
-     statusStyle(value){
-        if(value == '0'){
-            return "未审核";
-        }
-        if(value == '1'){
-            return "一级审核通过";
-        }
-        if(value == '2'){
-            return "二级审核通过";
-        }
-        if(value == '-1'){
-            return '一级审核未通过';
-        }
-        if(value == '-2'){
-            return '二级审核未通过';
-        }
-        return value;
+    attachBirth (value) {
+      return value ? String(value).slice(0, 10) : ''
     },
-    // 获取生日
-    attachBirth(val){
-        return String(val).substr(0,10); 
+    beforeAvatarUpload (file) {
+      if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+        this.$message.error('头像图片只能是 JPG 或 PNG 格式')
+        return false
+      }
+      if (file.size >= 2 * 1024 * 1024) {
+        this.$message.error('头像图片必须小于 2 MB')
+        return false
+      }
+      return true
     },
-    beforeAvatorUpload(file){
-        const isJPG = (file.type=== 'image/jpeg')||(file.type==='image/png');
-        if(!isJPG){
-            this.$message.error('上传头像图片只能是jpg或png格式');
-            return false;
-        }
-        const isLt2M = (file.size /1024 /1024) <2;
-        if(!isLt2M){
-            this.$message.error('上传头像图片的大小不饿能超过2M');
-            return false;
-        }
-        return true;
+    handleUploadSuccess (result) {
+      if (result.code === 1) {
+        this.getData()
+        this.notify('上传成功', 'success')
+      } else {
+        this.notify(result.msg || '上传失败', 'error')
+      }
     },
-
-    // 上传图片成功后要做的工作
-    handleAvatorSuccess(res){
-        let _this=this;
-        if(res.code==1){
-            _this.getData();
-            _this.$notify({
-                title: '上传成功',
-                type: 'success'
-            });
-        }else{
-            _this.$notify({
-                title: '上传失败',
-                type: 'error'
-            });
-        }
+    handleUploadError () {
+      this.notify('上传失败', 'error')
     },
-
-    //删除歌手
-    handleDelete(row){
-        console.log(this.username+"  "+row.studyNumber);
-        if(this.userLevel!='4'&&this.username!=row.studyNumber){
-            this.notify("您权限不足","error");
-        }
-        else{
-        this.idx=row.id;
-        this.delVisible=true;
-        }
+    handleDelete (row) {
+      this.idx = row.id
+      this.delVisible = true
     },
-    //把已经选择的项赋值给multipleSelection
-    handleSelectionChange(val){
-        this.multipleSelection=val;
+    handleSelectionChange (selection) {
+      this.multipleSelection = selection
     },
-
-    // 批量删除选择的项
-    delAll(){
-        for(let item of this.multipleSelection){
-            this.handleDelete(item.id);
-            this.deleteRow();
+    deleteRow () {
+      this.delVisible = false
+      return this.deleteRecords([this.idx])
+    },
+    async delAll () {
+      const ids = this.multipleSelection.map(row => row.id)
+      if (!ids.length) {
+        this.notify('请选择要删除的记录', 'warning')
+        return
+      }
+      try {
+        await this.$confirm(`确定删除选中的 ${ids.length} 条记录吗？`, '批量删除', { type: 'warning' })
+      } catch (error) {
+        return
+      }
+      await this.deleteRecords(ids)
+    },
+    async deleteRecords (ids) {
+      const results = await Promise.all(ids.map(async id => {
+        try {
+          return await this.deleteRequest(id) === true
+        } catch (error) {
+          return false
         }
-        this.multipleSelection = [];
+      }))
+      const deleted = results.filter(Boolean).length
+      if (deleted) {
+        this.multipleSelection = []
+        this.getData()
+      }
+      if (deleted === ids.length) {
+        this.notify('删除成功', 'success')
+      } else {
+        this.notify(`已删除 ${deleted} 条，${ids.length - deleted} 条删除失败`, 'error')
+      }
     }
-
-    }
+  }
 }
